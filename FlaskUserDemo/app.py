@@ -131,14 +131,16 @@ def show():
 
 
 @app.route('/movieview')
-def view_user():
+def movie_view():
     with create_connection() as connection:
         with connection.cursor() as cursor:
-            sql = """SELECT * FROM users WHERE id=%s"""
-            values = (request.args['id'])
+            sql = """SELECT users.first_name, movies.`name` FROM main_movie
+JOIN users ON main_movie.personid = users.id
+JOIN movies ON main_movie.movieid = movies.id WHERE personid = %s"""
+            values = (session['id'])
             cursor.execute(sql, values)
-            result = cursor.fetchone()
-    return render_template('users_view.html', result=result)
+            result = cursor.fetchall() 
+    return render_template('movies_view.html', result=result)
 # TODO: Add a '/profile' (view_user) route that uses SELECT
 @app.route('/view')
 def view_user():
