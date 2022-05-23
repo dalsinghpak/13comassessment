@@ -132,6 +132,33 @@ def show():
 
 @app.route('/movieview')
 def movie_view():
+    if session['role'] != 'admin':
+        with create_connection() as connection:
+            with connection.cursor() as cursor:
+                sql = """SELECT users.first_name, movies.`name` FROM main_movie
+    JOIN users ON main_movie.personid = users.id
+    JOIN movies ON main_movie.movieid = movies.id WHERE personid = %s"""
+                values = (session['id'])
+                cursor.execute(sql, values)
+                result = cursor.fetchall() 
+        return render_template('movies_view.html', result=result)
+    elif session['role'] == 'admin':
+        with create_connection() as connection:
+            with connection.cursor() as cursor:
+                sql = """SELECT users.first_name, movies.`name` FROM main_movie
+    JOIN users ON main_movie.personid = users.id
+    JOIN movies ON main_movie.movieid = movies.id"""
+                values = ()
+                cursor.execute(sql, values)
+                result = cursor.fetchall() 
+
+
+        return render_template('movies_view.html', result=result)
+
+@app.route('/movieviewad')
+def movie_viewad():
+    if session['role'] != 'admin':
+        return abort(404)
     with create_connection() as connection:
         with connection.cursor() as cursor:
             sql = """SELECT users.first_name, movies.`name` FROM main_movie
@@ -140,7 +167,8 @@ JOIN movies ON main_movie.movieid = movies.id WHERE personid = %s"""
             values = (session['id'])
             cursor.execute(sql, values)
             result = cursor.fetchall() 
-    return render_template('movies_view.html', result=result)
+    return render_template('movies_viewad.html', result=result)
+
 # TODO: Add a '/profile' (view_user) route that uses SELECT
 @app.route('/view')
 def view_user():

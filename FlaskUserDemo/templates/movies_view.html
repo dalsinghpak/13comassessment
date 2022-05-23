@@ -3,17 +3,30 @@
 {% block title %}View Profile{% endblock %}
 
 {% block content %}
+{% if session['role'] != 'admin' %}
 <h1>{{ result[0].first_name }}</h1>
+{% endif %}
+{% if session['role'] == 'admin' %}
+<h1>Hello Admin</h1>
+<a href="/movieviewad">View your own movies</a>
+{% endif %}
 <table>
     <thead>
         <tr>
             <th>Movie</th>
+            {% if session['role'] == 'admin' %}
+            <th>First Name</th>
+            {% endif %}
         </tr>
     </thead>
     <tbody>
         {% for row in result %}
         <tr>
             <td>{{ row.name }}</td>
+            {% if session['role'] == 'admin' %}
+            <td>{{ row.first_name }}</td>
+
+            {% endif %}
         </tr>
         {% endfor %}
     </tbody>
