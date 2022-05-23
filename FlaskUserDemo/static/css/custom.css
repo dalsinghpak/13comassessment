@@ -1,0 +1,18 @@
+table {
+    border-collapse: collapse;
+}
+
+th, td {
+    border: 1px solid black;
+}
+
+tr {
+    background-color: #ddd;
+}
+
+    tr:nth-child(2n) {
+        background-color: #eee;
+    }
+.formbox {
+    text-align: -webkit-center;
+}

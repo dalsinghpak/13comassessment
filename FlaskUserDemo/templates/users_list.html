@@ -1,0 +1,37 @@
+{% extends '_layout.html' %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<table>
+    <thead>
+        <tr>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>email</th>
+            <th>Password</th>
+            <th colspan="2">Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for row in result %}
+        <tr>
+            <td>{{ row.first_name }}</td>
+            <td>{{ row.last_name }}</td>
+            <td>{{ row.email }}</td>
+            <td>{{ row.password }}</td>
+            <td>
+                <a href="/view?id={{ row.id }}">View</a>
+                <a href="/edit_user?id={{ row.id }}">Edit</a>
+                <a href="/delete?id={{ row.id }}"
+                   onclick="return confirm('Are you sure you wish to delete {{ row.first_name }}?')">
+                    Delete
+                </a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+
+{% endblock %}

@@ -1,0 +1,14 @@
+{% extends '_layout.html' %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<a href="{{ url_for('add_user') }}">Sign Up</a>
+<br>
+{% if session['role'] == 'admin' %}
+<a href="{{ url_for('list_users')}}">View All</a>
+{% elif 'logged_in' in session %}
+<a href="{{ url_for('view_user', id=session['id']) }}">View your account</a>
+<a href="{{ url_for('show') }}">Selection of movies</a>
+{% endif %}
+{% endblock %}
