@@ -16,3 +16,85 @@ tr {
 .formbox {
     text-align: -webkit-center;
 }
+body{
+   background:antiquewhite;
+}
+form {
+    width: 12rem;
+    padding: 10px;
+    margin: 15% auto;
+    background: white;
+    border-radius: 10px
+}
+input[type=email] {
+    padding: 10px;
+    margin: 10px 0;
+    // add top and bottom margin
+}
+input[type=password] {
+    padding: 10px;
+    margin: 10px 0;
+    // add top and bottom margin
+}
+input[type=text] {
+    padding: 10px;
+    margin: 10px 0;
+    // add top and bottom margin
+}
+input[type=text] {
+    padding: 10px;
+    border: 0;
+    box-shadow: 0 0 15px 4px rgba(0,0,0,0.06);
+    border-radius: 10px;
+}
+input[type=email] {
+    padding: 10px;
+    border: 0;
+    box-shadow: 0 0 15px 4px rgba(0,0,0,0.06);
+    border-radius: 10px;
+}
+input[type=password] {
+    padding: 10px;
+    border: 0;
+    box-shadow: 0 0 15px 4px rgba(0,0,0,0.06);
+    border-radius: 10px;
+}
+input[type=submit] {
+    /* remove default behavior */
+    appearance: none;
+    -webkit-appearance: none;
+    /* usual styles */
+    padding: 10px;
+    border: none;
+    background-color: #3F51B5;
+    color: #fff;
+    font-weight: 600;
+    border-radius: 5px;
+    width: 100%;
+}
+/*css for file*/
+.addform {
+    width: 14rem;
+    padding: 10px;
+    margin: 15% auto;
+    background: white;
+    border-radius: 10px
+}
+::file-selector-button {
+    background: lightgrey;
+    border: 1px solid grey;
+    padding: 16px;
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+    margin: -16px;
+    margin-right: 16px;
+}
+#pic {
+    background: white;
+    padding: 16px;
+    border-radius: 10px;
+    box-shadow: inset 0px 0px 6px grey;
+    box-sizing: border-box;
+    width:100%;
+    margin-bottom:10px;
+}

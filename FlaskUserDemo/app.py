@@ -203,8 +203,13 @@ def add():
                 """
             values = (request.args['id'],
                       session['id'])
-            cursor.execute(sql, values)
-            connection.commit()
+            try:
+                cursor.execute(sql, values)
+                connection.commit()
+            except pymysql.err.IntegrityError:
+                flash('you already have this movie')
+                return redirect('/add')
+    flash('Movie Watched')
     return redirect('/')
 
 
