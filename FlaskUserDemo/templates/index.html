@@ -3,12 +3,23 @@
 {% block title %}Dashboard{% endblock %}
 
 {% block content %}
+{% if 'logged_in' not in session %}
 <a href="{{ url_for('add_user') }}">Sign Up</a>
+<a href="{{ url_for('login') }}">Login</a>
 <br>
-{% if session['role'] == 'admin' %}
-<a href="{{ url_for('list_users')}}">View All</a>
+{% elif session['role'] == 'admin' %}
+<h2>Admin controls:</h2>
+<div class="row">
+    <div class="col-md-12">
+        <a href="{{ url_for('list_users')}}">View All</a>
+        <a href="{{ url_for('movie_view')}}">View all user movies</a>
+        <a href="{{ url_for('movie_viewad')}}">View all your movies</a>
+    </div>
+</div>
+
 {% elif 'logged_in' in session %}
 <a href="{{ url_for('view_user', id=session['id']) }}">View your account</a>
 <a href="{{ url_for('show') }}">Selection of movies</a>
+<a href="{{ url_for('movie_view') }}">View your movies</a>
 {% endif %}
 {% endblock %}
