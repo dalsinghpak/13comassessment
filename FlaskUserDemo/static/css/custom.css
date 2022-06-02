@@ -98,3 +98,6 @@ input[type=submit] {
     width:100%;
     margin-bottom:10px;
 }
+marquee{
+    height:85vh;
+}
