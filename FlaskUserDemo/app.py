@@ -30,7 +30,7 @@ def login():
 
         with create_connection() as connection:
             with connection.cursor() as cursor:
-                sql = "SELECT * FROM users WHERE email=%s AND password=%s"
+                sql = "SELECT * FROM student WHERE email=%s AND password=%s"
                 values = (
                     request.form['email'],
                     encrypted_password
@@ -74,7 +74,7 @@ def add_user():
             avatar_filename = None
         with create_connection() as connection:
             with connection.cursor() as cursor:
-                sql = """INSERT INTO users 
+                sql = """INSERT INTO student 
                 (first_name, last_name, email, password, avatar)
                 VALUES (%s, %s, %s, %s, %s)
                 """
@@ -92,7 +92,7 @@ def add_user():
                 except pymysql.err.IntegrityError:
                     flash('email already in use')
                     return redirect('/register')
-                sql = "SELECT * FROM users WHERE email=%s AND password=%s"
+                sql = "SELECT * FROM student WHERE email=%s AND password=%s"
                 values = (
                     request.form['email'],
                     encrypted_password
@@ -125,7 +125,7 @@ def list_users():
 def show():
     with create_connection() as connection:
         with connection.cursor() as cursor:
-            cursor.execute("SELECT * FROM movies")
+            cursor.execute("SELECT * FROM subjects")
             result = cursor.fetchall()
     return render_template('movie_add.html', result=result)
 
@@ -135,19 +135,19 @@ def movie_view():
     if session['role'] != 'admin':
         with create_connection() as connection:
             with connection.cursor() as cursor:
-                sql = """SELECT users.first_name, movies.`name` FROM main_movie
-    JOIN users ON main_movie.personid = users.id
-    JOIN movies ON main_movie.movieid = movies.id WHERE personid = %s"""
-                values = (session['id'])
-                cursor.execute(sql, values)
-                result = cursor.fetchall() 
+                sql = """SELECT student.first_name, subjects.Name FROM joining
+    JOIN student ON joining.studentid = student.id
+    JOIN subjects ON joining.subjectid = subjects.id"""
+               
+                cursor.execute(sql)
+                result = cursor.fetchall()                                                                                                                                                                                                                                                                                                                                                                                    
         return render_template('movies_view.html', result=result)
     elif session['role'] == 'admin':
         with create_connection() as connection:
             with connection.cursor() as cursor:
-                sql = """SELECT users.first_name, movies.`name` FROM main_movie
-    JOIN users ON main_movie.personid = users.id
-    JOIN movies ON main_movie.movieid = movies.id"""
+                sql = """SELECT student.first_name, subjects.`Name` FROM joining
+    JOIN student ON joining.studentid = student.id
+    JOIN subjects ON joining.subjectid = subjects.id"""
                 values = ()
                 cursor.execute(sql, values)
                 result = cursor.fetchall() 
@@ -197,8 +197,8 @@ def add():
 
     with create_connection() as connection:
         with connection.cursor() as cursor:
-            sql =  """INSERT INTO main_movie 
-                (movieid, personid)
+            sql =  """INSERT INTO joining 
+                (studentid, subjectid)
                 VALUES (%s, %s)
                 """
             values = (request.args['id'],
@@ -207,7 +207,7 @@ def add():
                 cursor.execute(sql, values)
                 connection.commit()
             except pymysql.err.IntegrityError:
-                flash('you already have this movie')
+                flash('you already have this subject')
                 return redirect('/add')
     flash('Movie Watched')
     return redirect('/')
