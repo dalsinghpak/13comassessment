@@ -137,9 +137,9 @@ def movie_view():
             with connection.cursor() as cursor:
                 sql = """SELECT student.first_name, subjects.Name FROM joining
     JOIN student ON joining.studentid = student.id
-    JOIN subjects ON joining.subjectid = subjects.id"""
-               
-                cursor.execute(sql)
+    JOIN subjects ON joining.subjectid = subjects.id WHERE studentid = %s"""
+                values = (session['id'])
+                cursor.execute(sql, values)
                 result = cursor.fetchall()                                                                                                                                                                                                                                                                                                                                                                                    
         return render_template('movies_view.html', result=result)
     elif session['role'] == 'admin':
@@ -201,8 +201,8 @@ def add():
                 (studentid, subjectid)
                 VALUES (%s, %s)
                 """
-            values = (request.args['id'],
-                      session['id'])
+            values = (session['id'], request.args['id']
+                      )
             try:
                 cursor.execute(sql, values)
                 connection.commit()
