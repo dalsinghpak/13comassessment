@@ -1,4 +1,5 @@
 import uuid, os, hashlib
+from datetime import date, datetime
 from flask import Flask, request, render_template, redirect, url_for, session, abort, flash, jsonify
 app = Flask(__name__)
 
@@ -30,7 +31,7 @@ def login():
 
         with create_connection() as connection:
             with connection.cursor() as cursor:
-                sql = "SELECT * FROM student WHERE email=%s AND password=%s"
+                sql = "SELECT * FROM users WHERE email=%s AND password=%s"
                 values = (
                     request.form['email'],
                     encrypted_password
@@ -74,7 +75,7 @@ def add_user():
             avatar_filename = None
         with create_connection() as connection:
             with connection.cursor() as cursor:
-                sql = """INSERT INTO student 
+                sql = """INSERT INTO users 
                 (first_name, last_name, email, password, avatar)
                 VALUES (%s, %s, %s, %s, %s)
                 """
@@ -92,7 +93,7 @@ def add_user():
                 except pymysql.err.IntegrityError:
                     flash('email already in use')
                     return redirect('/register')
-                sql = "SELECT * FROM student WHERE email=%s AND password=%s"
+                sql = "SELECT * FROM users WHERE email=%s AND password=%s"
                 values = (
                     request.form['email'],
                     encrypted_password
@@ -123,38 +124,44 @@ def list_users():
 
 @app.route('/show')
 def show():
-    with create_connection() as connection:
-        with connection.cursor() as cursor:
-            cursor.execute("SELECT * FROM subjects")
-            result = cursor.fetchall()
-    return render_template('movie_add.html', result=result)
+    datenow = datetime.now()
+    duedate = datetime(2022, 6, 28)
+    if datenow <= duedate:
+        with create_connection() as connection:
+            with connection.cursor() as cursor:
+                cursor.execute("SELECT * FROM subjects")
+                result = cursor.fetchall()
+        return render_template('subject_add.html', result=result)
+    else:
+        return render_template('selection_expired.html')
 
-
+# Lets user view their subjects or admin view all users subjects
 @app.route('/movieview')
 def movie_view():
     if session['role'] != 'admin':
         with create_connection() as connection:
             with connection.cursor() as cursor:
-                sql = """SELECT student.first_name, subjects.Name FROM joining
-    JOIN student ON joining.studentid = student.id
-    JOIN subjects ON joining.subjectid = subjects.id WHERE studentid = %s"""
+                sql = """SELECT joining.id, users.first_name, subjects.Name FROM joining
+    JOIN users ON joining.usersid = users.id
+    JOIN subjects ON joining.subjectid = subjects.id WHERE usersid = %s"""
                 values = (session['id'])
                 cursor.execute(sql, values)
                 result = cursor.fetchall()                                                                                                                                                                                                                                                                                                                                                                                    
-        return render_template('movies_view.html', result=result)
+        return render_template('subject_view.html', result=result)
+
     elif session['role'] == 'admin':
         with create_connection() as connection:
             with connection.cursor() as cursor:
-                sql = """SELECT student.first_name, subjects.`Name` FROM joining
-    JOIN student ON joining.studentid = student.id
+                sql = """SELECT users.first_name, subjects.`Name` FROM joining
+    JOIN users ON joining.usersid = users.id
     JOIN subjects ON joining.subjectid = subjects.id"""
                 values = ()
                 cursor.execute(sql, values)
                 result = cursor.fetchall() 
 
 
-        return render_template('movies_view.html', result=result)
-
+        return render_template('subject_view.html', result=result)
+# Admin can see their subjects
 @app.route('/movieviewad')
 def movie_viewad():
     if session['role'] != 'admin':
@@ -179,26 +186,24 @@ def view_user():
             cursor.execute(sql, values)
             result = cursor.fetchone()
     return render_template('users_view.html', result=result)
-# TODO: Add a '/delete_user' route that uses DELETE
+# Add a '/delete_user' route that uses DELETE
 @app.route('/delete')
 def delete():
-    if session['role'] != 'admin':
-        return abort(404)
     with create_connection() as connection:
         with connection.cursor() as cursor:
-            sql = """DELETE FROM users WHERE id = %s"""
+            sql = """DELETE FROM joining WHERE id = %s"""
             values = (request.args['id'])
             cursor.execute(sql, values)
             connection.commit()
-    return redirect('/dashboard')
-
+    return redirect('/')
+# users can add their subject
 @app.route('/add')
 def add():
 
     with create_connection() as connection:
         with connection.cursor() as cursor:
             sql =  """INSERT INTO joining 
-                (studentid, subjectid)
+                (usersid, subjectid)
                 VALUES (%s, %s)
                 """
             values = (session['id'], request.args['id']
@@ -209,7 +214,7 @@ def add():
             except pymysql.err.IntegrityError:
                 flash('you already have this subject')
                 return redirect('/add')
-    flash('Movie Watched')
+    flash('Subject added')
     return redirect('/')
 
 
@@ -259,6 +264,35 @@ def edit_user():
                 cursor.execute(sql, values)
                 result = cursor.fetchone()
         return render_template('users_edit.html', result=result)
+
+# limiting subject selection and then adding the subject
+@app.route('/subject_vaildate')
+def vaildate():
+    with create_connection() as connection:
+        with connection.cursor() as cursor:
+                sql = """SELECT users.first_name, subjects.Name FROM joining
+    JOIN users ON joining.usersid = users.id
+    JOIN subjects ON joining.subjectid = subjects.id WHERE usersid = %s"""
+                values = (session['id'])
+                cursor.execute(sql, values)
+                result = cursor.fetchall() 
+                if len(result) < 5:
+                    sql =  """INSERT INTO joining 
+                        (usersid, subjectid)
+                        VALUES (%s, %s)
+                        """
+                    values = (session['id'], 
+                              request.args['id'])
+                    try:
+                        cursor.execute(sql, values)
+                        connection.commit()
+                    except pymysql.err.IntegrityError:
+                        flash('you already have this subject')
+                else:
+                    flash('Limit of 5 subjects reached.')
+                    return redirect('/show')
+    flash('Selected')
+    return redirect('/')
 
 @app.route('/checkemail')
 def check_email():

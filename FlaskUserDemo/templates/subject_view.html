@@ -10,16 +10,22 @@
 <table>
     <thead>
         <tr>
-            <th>Subjects selected</th>
             {% if session['role'] == 'admin' %}
             <th>First Name</th>
             {% endif %}
+            <th>Subjects selected</th>
         </tr>
     </thead>
     <tbody>
         {% for row in result %}
         <tr>
             <td>{{ row.Name }}</td>
+            <td>
+                <a href="/delete?id={{ row.id }}"
+                   onclick="return confirm('Do you want to delete {{ row.Name }}?')">
+                    Delete
+                </a>
+            </td>
         </tr>
         {% endfor %}
     </tbody>

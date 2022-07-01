@@ -36,10 +36,10 @@
     </nav>
     {% endif %}
     {% block content %}{% endblock %}
-    <ul>
+    <footer>
         {% for message in get_flashed_messages() %}
-        <li>{{ message }}</li>
+        <aside>{{ message }}</aside>
         {% endfor %}
-    </ul>
+    </footer>
 </body>
 </html>
