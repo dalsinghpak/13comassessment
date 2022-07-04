@@ -28,9 +28,8 @@
         <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
             <div class="navbar-nav">
                 <a class="nav-item nav-link" href="/">Home</a>
-                <a class="nav-item nav-link" href="{{ url_for('view_user', id=session['id']) }}">View your account</a>
-                <a class="nav-item nav-link" href="{{ url_for('show') }}">Movie Library</a>
-                <a class="nav-item nav-link" href="{{ url_for('movie_view') }}">View your movies</a>
+                <a class="nav-item nav-link" href="{{ url_for('subject_select') }}">Subject Selection</a>
+                <a class="nav-item nav-link" href="/subject_view">View your movies</a>
             </div>
         </div>
     </nav>

@@ -122,8 +122,8 @@ def list_users():
             result = cursor.fetchall()
     return render_template('users_list.html', result=result)
 
-@app.route('/show')
-def show():
+@app.route('/subject_select')
+def subject_select():
     datenow = datetime.now()
     duedate = datetime(2022, 6, 28)
     if datenow <= duedate:
@@ -136,8 +136,8 @@ def show():
         return render_template('selection_expired.html')
 
 # Lets user view their subjects or admin view all users subjects
-@app.route('/movieview')
-def movie_view():
+@app.route('/subject_view')
+def subject_view():
     if session['role'] != 'admin':
         with create_connection() as connection:
             with connection.cursor() as cursor:
@@ -162,30 +162,36 @@ def movie_view():
 
         return render_template('subject_view.html', result=result)
 # Admin can see their subjects
-@app.route('/movieviewad')
-def movie_viewad():
+@app.route('/subjectviewad')
+def subject_viewad():
     if session['role'] != 'admin':
         return abort(404)
     with create_connection() as connection:
         with connection.cursor() as cursor:
-            sql = """SELECT users.first_name, movies.`name` FROM main_movie
-JOIN users ON main_movie.personid = users.id
-JOIN movies ON main_movie.movieid = movies.id WHERE personid = %s"""
+            sql = """SELECT joining.id, users.first_name, subjects.Name FROM joining
+    JOIN users ON joining.usersid = users.id
+    JOIN subjects ON joining.subjectid = subjects.id WHERE usersid = %s"""
             values = (session['id'])
             cursor.execute(sql, values)
             result = cursor.fetchall() 
-    return render_template('movies_viewad.html', result=result)
+    return render_template('subject_viewad.html', result=result)
 
 # TODO: Add a '/profile' (view_user) route that uses SELECT
 @app.route('/view')
 def view_user():
     with create_connection() as connection:
         with connection.cursor() as cursor:
-            sql = """SELECT * FROM users WHERE id=%s"""
+            sql = """SELECT joining.id, users.first_name, users.last_name, users.email, users.avatar , subjects.Name FROM joining
+    JOIN users ON joining.usersid = users.id
+    JOIN subjects ON joining.subjectid = subjects.id WHERE usersid = %s"""
             values = (request.args['id'])
             cursor.execute(sql, values)
-            result = cursor.fetchone()
-    return render_template('users_view.html', result=result)
+            result = cursor.fetchall()
+            sql1 = """SELECT * FROM users WHERE users.id = %s"""
+            values1 = (request.args['id'])
+            cursor.execute(sql1, values1)
+            result1 = cursor.fetchone()
+    return render_template('users_view.html', result=result, result1=result1)
 # Add a '/delete_user' route that uses DELETE
 @app.route('/delete')
 def delete():

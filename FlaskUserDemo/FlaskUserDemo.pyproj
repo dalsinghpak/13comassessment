@@ -38,7 +38,7 @@
     <Content Include="templates\index.html" />
     <Content Include="templates\login.html" />
     <Content Include="templates\subject_view.html" />
-    <Content Include="templates\movies_viewad.html" />
+    <Content Include="templates\subject_viewad.html" />
     <Content Include="templates\subject_add.html" />
     <Content Include="templates\selection_expired.html" />
     <Content Include="templates\setup.html" />

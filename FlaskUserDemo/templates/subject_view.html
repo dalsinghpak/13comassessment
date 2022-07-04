@@ -19,6 +19,10 @@
     <tbody>
         {% for row in result %}
         <tr>
+            {% if session['role'] == 'admin' %}
+            <td>{{ row.first_name }}</td>
+
+            {% endif %}
             <td>{{ row.Name }}</td>
             <td>
                 <a href="/delete?id={{ row.id }}"
