@@ -152,8 +152,9 @@ def list_users():
 @app.route('/subject_select')
 def subject_select():
     datenow = datetime.now()
-    duedate = datetime(2022, 7, 10)
-    if datenow <= duedate:
+    duedate = datetime(2022, 7, 10, 11, 59, 59)
+    startdate = datetime(2022, 7, 4)
+    if datenow <= duedate and datenow >= startdate:
         with create_connection() as connection:
             with connection.cursor() as cursor:
                 cursor.execute("SELECT * FROM subjects")
