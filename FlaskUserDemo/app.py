@@ -1,4 +1,4 @@
-import uuid, os, hashlib
+import uuid, os, hashlib, pymysql
 from datetime import date, datetime
 from flask import Flask, request, render_template, redirect, url_for, session, abort, flash, jsonify
 app = Flask(__name__)
@@ -109,7 +109,34 @@ def add_user():
         return redirect('/', result=result)
     return render_template('users_add.html')
 
+# Admin Subject add
+@app.route('/subject_add', methods=['GET', 'POST'])
+def subject_add():
 
+    if request.method == 'POST':
+        with create_connection() as connection:
+            with connection.cursor() as cursor:
+                sql = """INSERT INTO subjects 
+                (Name, Credits, Teacher, Summary, year_level)
+                VALUES (%s, %s, %s, %s, %s)
+                """
+                values = (
+                    request.form['subject_name'],
+                    request.form['Credits'],
+                    request.form['Teacher'],
+                    request.form['Summary'],
+                    request.form['year_level']
+                    )
+          
+                try:
+                    cursor.execute(sql, values)
+                    connection.commit()
+                except pymysql.err.IntegrityError:
+                    flash('Subject already added')
+                    return redirect('/subject_add')
+        flash('Subject added')
+        return redirect('/')
+    return render_template('admin_subject_add.html')
 
 # TODO: Add a '/dashboard' (list_users) route that uses SELECT
 @app.route('/dashboard')
@@ -125,7 +152,7 @@ def list_users():
 @app.route('/subject_select')
 def subject_select():
     datenow = datetime.now()
-    duedate = datetime(2022, 6, 28)
+    duedate = datetime(2022, 7, 10)
     if datenow <= duedate:
         with create_connection() as connection:
             with connection.cursor() as cursor:
@@ -146,8 +173,12 @@ def subject_view():
     JOIN subjects ON joining.subjectid = subjects.id WHERE usersid = %s"""
                 values = (session['id'])
                 cursor.execute(sql, values)
-                result = cursor.fetchall()                                                                                                                                                                                                                                                                                                                                                                                    
-        return render_template('subject_view.html', result=result)
+                result = cursor.fetchall()
+                sql1 = """SELECT * FROM users WHERE id = %s"""
+                values1 = (session['id'])
+                cursor.execute(sql1, values1)
+                result1 = cursor.fetchone()               
+        return render_template('subject_view.html', result=result,  result1=result1)
 
     elif session['role'] == 'admin':
         with create_connection() as connection:
@@ -157,10 +188,20 @@ def subject_view():
     JOIN subjects ON joining.subjectid = subjects.id"""
                 values = ()
                 cursor.execute(sql, values)
-                result = cursor.fetchall() 
-
-
+                result = cursor.fetchall()  
         return render_template('subject_view.html', result=result)
+
+# Lets admin view all subjects
+@app.route('/admin_subject_view')
+def admin_subject_view():
+    if session['role'] == 'admin':
+        with create_connection() as connection:
+            with connection.cursor() as cursor:
+                sql = """SELECT * FROM subjects"""
+                values = ()
+                cursor.execute(sql, values)
+                result = cursor.fetchall() 
+        return render_template('admin_subject_view.html', result=result)
 # Admin can see their subjects
 @app.route('/subjectviewad')
 def subject_viewad():
@@ -174,7 +215,11 @@ def subject_viewad():
             values = (session['id'])
             cursor.execute(sql, values)
             result = cursor.fetchall() 
-    return render_template('subject_viewad.html', result=result)
+            sql1 = """SELECT * FROM users WHERE id = %s"""
+            values1 = (session['id'])
+            cursor.execute(sql1, values1)
+            result1 = cursor.fetchone() 
+    return render_template('subject_viewad.html', result=result, result1=result1)
 
 # TODO: Add a '/profile' (view_user) route that uses SELECT
 @app.route('/view')
@@ -242,7 +287,9 @@ def edit_user():
 
         with create_connection() as connection:
             with connection.cursor() as cursor:
-
+             if request.form['password']:
+                password = request.form['password']
+                encrypted_password = hashlib.sha256(password.encode()).hexdigest()
                 sql = """UPDATE users SET
                     first_name = %s,
                     last_name = %s,
@@ -270,6 +317,41 @@ def edit_user():
                 cursor.execute(sql, values)
                 result = cursor.fetchone()
         return render_template('users_edit.html', result=result)
+
+
+# Editing the subject
+@app.route('/subject_edit', methods=['GET', 'POST'])
+def subject_edit():
+    if request.method == 'POST':
+        with create_connection() as connection:
+            with connection.cursor() as cursor:
+                sql = """UPDATE subjects SET
+                    Name = %s,
+                    Credits = %s,
+                    Teacher = %s,
+                    Summary = %s,
+                    year_level = %s
+                    WHERE id = %s"""
+                values = (
+                    request.form['Name'],
+                    request.form['Credits'],
+                    request.form['Teacher'],
+                    request.form['Summary'],
+                    request.form['year_level'],
+                    request.form['id']
+                    
+                )
+                cursor.execute(sql, values)
+                connection.commit()
+        return redirect('/admin_subject_view')
+    else:
+        with create_connection() as connection:
+            with connection.cursor() as cursor:
+                sql = "SELECT * FROM subjects WHERE id = %s"
+                values = (request.args['id'])
+                cursor.execute(sql, values)
+                result = cursor.fetchone()
+        return render_template('subject_edit.html', result=result)
 
 # limiting subject selection and then adding the subject
 @app.route('/subject_vaildate')

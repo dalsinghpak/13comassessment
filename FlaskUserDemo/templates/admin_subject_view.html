@@ -1,6 +1,6 @@
 {% extends '_layout.html' %}
 
-{% block title %}Dashboard{% endblock %}
+{% block title %}Admin Subject view{% endblock %}
 
 {% block content %}
 <table>
@@ -21,9 +21,10 @@
             <td>{{ row.Teacher }}</td>
             <td>{{ row.Summary }}</td>
             <td>
-                <a href="/subject_vaildate?id={{ row.id }}"
-                   onclick="return confirm('Dow you want to add {{ row.Name }}?')">
-                    Add
+                <a href="/subject_edit?id={{ row.id }}">Edit</a>
+                <a href="/delete?id={{ row.id }}"
+                   onclick="return confirm('Are you sure you wish to delete {{ row.first_name }}?')">
+                    Delete
                 </a>
             </td>
         </tr>

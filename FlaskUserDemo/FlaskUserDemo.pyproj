@@ -35,8 +35,11 @@
     <Content Include="requirements.txt" />
     <Content Include="static\css\custom.css" />
     <Content Include="static\images\default.png" />
+    <Content Include="templates\admin_subject_add.html" />
+    <Content Include="templates\admin_subject_view.html" />
     <Content Include="templates\index.html" />
     <Content Include="templates\login.html" />
+    <Content Include="templates\subject_edit.html" />
     <Content Include="templates\subject_view.html" />
     <Content Include="templates\subject_viewad.html" />
     <Content Include="templates\subject_add.html" />

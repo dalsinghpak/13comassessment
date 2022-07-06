@@ -1,0 +1,25 @@
+﻿{% extends '_layout.html' %}
+
+{% block title %}Edit User{% endblock %}
+
+{% block content %}
+<form method="post" enctype="multipart/form-data">
+    <input type="hidden" name="id" value="{{ result.id }}">
+    <label for="Name">Name</label>
+    <input id="Name" name="Name" value="{{ result.Name }}">
+    <br>
+    <label for="Credits">Credits</label>
+    <input id="Credits" name="Credits" value="{{ result.Credits }}">
+    <br>
+    <label for="Teacher">Teacher</label>
+    <input id="Teacher" name="Teacher" value="{{ result.Teacher }}">
+    <br>
+    <label for="Summary">Summary</label>
+    <input id="Summary" name="Summary" value="{{ result.Summary }}">
+    <br>
+    <label for="year_level">Year level</label>
+    <input id="year_level" type="text" name="year_level" value="{{ result.year_level }}">
+    <br>
+    <input type="submit" value="Update Student">
+</form>
+{% endblock %}
