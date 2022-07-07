@@ -1,72 +1,80 @@
 import uuid, os, hashlib, pymysql
 from datetime import date, datetime
-from flask import Flask, request, render_template, redirect, url_for, session, abort, flash, jsonify
+from flask import (
+    Flask,
+    request,
+    render_template,
+    redirect,
+    url_for,
+    session,
+    abort,
+    flash,
+    jsonify,
+)
+
 app = Flask(__name__)
 
 # Register the setup page and import create_connection()
 from utils import create_connection, setup
+
 app.register_blueprint(setup)
+
 
 @app.before_request
 def restrict():
-    restricted_pages = [
-        'list_users',
-        'view_user',
-        'delete',
-        'edit_user'
-        ]
-    if 'logged_in' not in session and request.endpoint in restricted_pages:
-        return redirect('/login')
+    restricted_pages = ["list_users", "view_user", "delete", "edit_user"]
+    if "logged_in" not in session and request.endpoint in restricted_pages:
+        return redirect("/login")
 
-@app.route('/')
+
+@app.route("/")
 def home():
-    return render_template('index.html')
+    return render_template("index.html")
 
-@app.route('/login', methods={'GET', 'POST'})
+
+@app.route("/login", methods={"GET", "POST"})
 def login():
-    if request.method == 'POST':
+    if request.method == "POST":
 
-        password = request.form['password']
+        password = request.form["password"]
         encrypted_password = hashlib.sha256(password.encode()).hexdigest()
 
         with create_connection() as connection:
             with connection.cursor() as cursor:
                 sql = "SELECT * FROM users WHERE email=%s AND password=%s"
-                values = (
-                    request.form['email'],
-                    encrypted_password
-                    )
+                values = (request.form["email"], encrypted_password)
                 cursor.execute(sql, values)
                 result = cursor.fetchone()
         if result:
-             session['logged_in'] = True
-             session['first_name'] = result['first_name']
-             session['role'] = result['role']
-             session['id'] = result['id']
-             return redirect('/')
-             flash("you finally got the password right")
+            session["logged_in"] = True
+            session["first_name"] = result["first_name"]
+            session["role"] = result["role"]
+            session["id"] = result["id"]
+            return redirect("/")
+            flash("you finally got the password right")
         else:
-             flash("looks like someone has memory loss")
-             return redirect("/login")
+            flash("looks like someone has memory loss")
+            return redirect("/login")
     else:
-        return render_template('login.html')
-@app.route('/logout')
+        return render_template("login.html")
+
+
+@app.route("/logout")
 def logout():
     session.clear()
-    return redirect('/')
+    return redirect("/")
 
-    
 
 # TODO: Add a '/register' (add_user) route that uses INSERT
-@app.route('/register', methods=['GET', 'POST'])
+@app.route("/register", methods=["GET", "POST"])
 def add_user():
 
-    if request.method == 'POST':
+    if request.method == "POST":
 
-        password = request.form['password']
+        password = request.form["password"]
         encrypted_password = hashlib.sha256(password.encode()).hexdigest()
 
-        if request.files['avatar'].filename:
+        if request.files["avatar"].filename:
             avatar_image = request.files["avatar"]
             ext = os.path.splitext(avatar_image.filename)[1]
             avatar_filename = str(uuid.uuid4())[:8] + ext
@@ -75,113 +83,114 @@ def add_user():
             avatar_filename = None
         with create_connection() as connection:
             with connection.cursor() as cursor:
-                sql = """INSERT INTO users 
+                sql = """INSERT INTO users
                 (first_name, last_name, email, password, avatar)
                 VALUES (%s, %s, %s, %s, %s)
                 """
                 values = (
-                    request.form['first_name'],
-                    request.form['last_name'],
-                    request.form['email'],
+                    request.form["first_name"],
+                    request.form["last_name"],
+                    request.form["email"],
                     encrypted_password,
-                    avatar_filename
-                    )
-          
+                    avatar_filename,
+                )
+
                 try:
                     cursor.execute(sql, values)
                     connection.commit()
                 except pymysql.err.IntegrityError:
-                    flash('email already in use')
-                    return redirect('/register')
+                    flash("email already in use")
+                    return redirect("/register")
                 sql = "SELECT * FROM users WHERE email=%s AND password=%s"
-                values = (
-                    request.form['email'],
-                    encrypted_password
-                    )
+                values = (request.form["email"], encrypted_password)
                 cursor.execute(sql, values)
                 result = cursor.fetchone()
         if result:
-             session['logged_in'] = True
-             session['first_name'] = result['first_name']
-             session['role'] = result['role']
-             session['id'] = result['id']
-             return redirect('/')
-        return redirect('/', result=result)
-    return render_template('users_add.html')
+            session["logged_in"] = True
+            session["first_name"] = result["first_name"]
+            session["role"] = result["role"]
+            session["id"] = result["id"]
+            return redirect("/")
+        return redirect("/", result=result)
+    return render_template("users_add.html")
+
 
 # Admin Subject add
-@app.route('/subject_add', methods=['GET', 'POST'])
+@app.route("/subject_add", methods=["GET", "POST"])
 def subject_add():
 
-    if request.method == 'POST':
+    if request.method == "POST":
         with create_connection() as connection:
             with connection.cursor() as cursor:
-                sql = """INSERT INTO subjects 
+                sql = """INSERT INTO subjects
                 (Name, Credits, Teacher, Summary, year_level)
                 VALUES (%s, %s, %s, %s, %s)
                 """
                 values = (
-                    request.form['subject_name'],
-                    request.form['Credits'],
-                    request.form['Teacher'],
-                    request.form['Summary'],
-                    request.form['year_level']
-                    )
-          
+                    request.form["subject_name"],
+                    request.form["Credits"],
+                    request.form["Teacher"],
+                    request.form["Summary"],
+                    request.form["year_level"],
+                )
+
                 try:
                     cursor.execute(sql, values)
                     connection.commit()
                 except pymysql.err.IntegrityError:
-                    flash('Subject already added')
-                    return redirect('/subject_add')
-        flash('Subject added')
-        return redirect('/')
-    return render_template('admin_subject_add.html')
+                    flash("Subject already added")
+                    return redirect("/subject_add")
+        flash("Subject added")
+        return redirect("/")
+    return render_template("admin_subject_add.html")
+
 
 # TODO: Add a '/dashboard' (list_users) route that uses SELECT
-@app.route('/dashboard')
+@app.route("/dashboard")
 def list_users():
-    if session['role'] != 'admin':
+    if session["role"] != "admin":
         return abort(404)
     with create_connection() as connection:
         with connection.cursor() as cursor:
             cursor.execute("SELECT * FROM users")
             result = cursor.fetchall()
-    return render_template('users_list.html', result=result)
+    return render_template("users_list.html", result=result)
 
-@app.route('/subject_select')
+
+@app.route("/subject_select")
 def subject_select():
-    datenow = datetime.now()
-    duedate = datetime(2022, 7, 10, 11, 59, 59)
-    startdate = datetime(2022, 7, 4)
+    datenow = datetime.now() # get todays date
+    duedate = datetime(2022, 7, 6, 23, 59, 59) # 1 second before midnight on that date
+    startdate = datetime(2022, 7, 6)
     if datenow <= duedate and datenow >= startdate:
         with create_connection() as connection:
             with connection.cursor() as cursor:
                 cursor.execute("SELECT * FROM subjects")
                 result = cursor.fetchall()
-        return render_template('subject_add.html', result=result)
+        return render_template("subject_add.html", result=result)
     else:
-        return render_template('selection_expired.html')
+        return render_template("selection_expired.html")
+
 
 # Lets user view their subjects or admin view all users subjects
-@app.route('/subject_view')
+@app.route("/subject_view")
 def subject_view():
-    if session['role'] != 'admin':
+    if session["role"] != "admin":
         with create_connection() as connection:
             with connection.cursor() as cursor:
                 sql = """SELECT joining.id, users.first_name, subjects.Name FROM joining
     JOIN users ON joining.usersid = users.id
     JOIN subjects ON joining.subjectid = subjects.id WHERE usersid = %s"""
-                values = (session['id'])
+                values = session["id"]
                 cursor.execute(sql, values)
                 result = cursor.fetchall()
                 sql1 = """SELECT * FROM users WHERE id = %s"""
-                values1 = (session['id'])
+                values1 = session["id"]
                 cursor.execute(sql1, values1)
-                result1 = cursor.fetchone()               
-        return render_template('subject_view.html', result=result,  result1=result1)
+                result1 = cursor.fetchone()
+        return render_template("subject_view.html", result=result, result1=result1)
 
-    elif session['role'] == 'admin':
+    elif session["role"] == "admin":
         with create_connection() as connection:
             with connection.cursor() as cursor:
                 sql = """SELECT users.first_name, subjects.`Name` FROM joining
@@ -189,183 +198,185 @@ def subject_view():
     JOIN subjects ON joining.subjectid = subjects.id"""
                 values = ()
                 cursor.execute(sql, values)
-                result = cursor.fetchall()  
-        return render_template('subject_view.html', result=result)
+                result = cursor.fetchall()
+        return render_template("subject_view.html", result=result)
 
 
 # admin can filter students by subject
-@app.route('/admin_subject_view')
+@app.route("/admin_subject_view")
 def admin_subject_view():
-    if session['role'] == 'admin':
+    if session["role"] == "admin":
         with create_connection() as connection:
             with connection.cursor() as cursor:
                 sql = """SELECT joining.id, users.first_name, subjects.Name FROM joining
     JOIN users ON joining.usersid = users.id
     JOIN subjects ON joining.subjectid = subjects.id WHERE subjectid = %s"""
-                values = (request.args['id'])
+                values = request.args["id"]
                 cursor.execute(sql, values)
                 result = cursor.fetchall()
                 sql1 = """SELECT * FROM subjects WHERE id = %s"""
-                values1 = (request.args['id'])
+                values1 = request.args["id"]
                 cursor.execute(sql1, values1)
-                result1 = cursor.fetchone()               
-        return render_template('admin_subject_view.html', result=result,  result1=result1)
+                result1 = cursor.fetchone()
+        return render_template(
+            "admin_subject_view.html", result=result, result1=result1
+        )
 
 
 # Lets admin view all subjects
-@app.route('/admin_subject_list')
+@app.route("/admin_subject_list")
 def admin_subject_list():
-    if session['role'] == 'admin':
+    if session["role"] == "admin":
         with create_connection() as connection:
             with connection.cursor() as cursor:
                 sql = """SELECT * FROM subjects"""
                 values = ()
                 cursor.execute(sql, values)
-                result = cursor.fetchall() 
-        return render_template('admin_subject_list.html', result=result)
+                result = cursor.fetchall()
+        return render_template("admin_subject_list.html", result=result)
 
 
 # Admin can see their subjects
-@app.route('/subjectviewad')
+@app.route("/subjectviewad")
 def subject_viewad():
-    if session['role'] != 'admin':
+    if session["role"] != "admin":
         return abort(404)
     with create_connection() as connection:
         with connection.cursor() as cursor:
             sql = """SELECT joining.id, users.first_name, subjects.Name FROM joining
     JOIN users ON joining.usersid = users.id
     JOIN subjects ON joining.subjectid = subjects.id WHERE usersid = %s"""
-            values = (session['id'])
+            values = session["id"]
             cursor.execute(sql, values)
-            result = cursor.fetchall() 
+            result = cursor.fetchall()
             sql1 = """SELECT * FROM users WHERE id = %s"""
-            values1 = (session['id'])
+            values1 = session["id"]
             cursor.execute(sql1, values1)
-            result1 = cursor.fetchone() 
-    return render_template('subject_viewad.html', result=result, result1=result1)
+            result1 = cursor.fetchone()
+    return render_template("subject_viewad.html", result=result, result1=result1)
 
 
 # TODO: Add a '/profile' (view_user) route that uses SELECT
-@app.route('/view')
+@app.route("/view")
 def view_user():
     with create_connection() as connection:
         with connection.cursor() as cursor:
             sql = """SELECT joining.id, users.first_name, users.last_name, users.email, users.avatar , subjects.Name FROM joining
     JOIN users ON joining.usersid = users.id
     JOIN subjects ON joining.subjectid = subjects.id WHERE usersid = %s"""
-            values = (request.args['id'])
+            values = request.args["id"]
             cursor.execute(sql, values)
             result = cursor.fetchall()
             sql1 = """SELECT * FROM users WHERE users.id = %s"""
-            values1 = (request.args['id'])
+            values1 = request.args["id"]
             cursor.execute(sql1, values1)
             result1 = cursor.fetchone()
-    return render_template('users_view.html', result=result, result1=result1)
+    return render_template("users_view.html", result=result, result1=result1)
 
 
 # Add a '/delete_user' route that uses DELETE
-@app.route('/delete')
+@app.route("/delete")
 def delete():
     with create_connection() as connection:
         with connection.cursor() as cursor:
             sql = """DELETE FROM joining WHERE id = %s"""
-            values = (request.args['id'])
+            values = request.args["id"]
             cursor.execute(sql, values)
             connection.commit()
-    return redirect('/')
+    return redirect("/")
 
 
 # lets admin delete a subject
-@app.route('/delete_subject')
+@app.route("/delete_subject")
 def delete_subject():
     with create_connection() as connection:
         with connection.cursor() as cursor:
             sql = """DELETE FROM subjects WHERE id = %s"""
-            values = (request.args['id'])
+            values = request.args["id"]
             cursor.execute(sql, values)
             connection.commit()
-    return redirect('/')
+    return redirect("/")
 
 
 # users can add their subject
-@app.route('/add')
+@app.route("/add")
 def add():
 
     with create_connection() as connection:
         with connection.cursor() as cursor:
-            sql =  """INSERT INTO joining 
+            sql = """INSERT INTO joining
                 (usersid, subjectid)
                 VALUES (%s, %s)
                 """
-            values = (session['id'], request.args['id']
-                      )
+            values = (session["id"], request.args["id"])
             try:
                 cursor.execute(sql, values)
                 connection.commit()
             except pymysql.err.IntegrityError:
-                flash('you already have this subject')
-                return redirect('/add')
-    flash('Subject added')
-    return redirect('/')
+                flash("you already have this subject")
+                return redirect("/add")
+    flash("Subject added")
+    return redirect("/")
 
 
 # lets user admin update student details
-@app.route('/edit_user', methods=['GET', 'POST'])
+@app.route("/edit_user", methods=["GET", "POST"])
 def edit_user():
-    if session['role'] != 'admin' and str(session['id']) != request.args['id']:
+    if session["role"] != "admin" and str(session["id"]) != request.args["id"]:
         return abort(404)
-    if request.method == 'POST':
-        if request.files['avatar'].filename:
+    if request.method == "POST":
+        if request.files["avatar"].filename:
             avatar_image = request.files["avatar"]
             ext = os.path.splitext(avatar_image.filename)[1]
             avatar_filename = str(uuid.uuid4())[:8] + ext
             avatar_image.save("static/images/" + avatar_filename)
-            if request.form['old_avatar'] != 'None' :
-                os.remove("static/images/" + request.form['old_avatar'])
+            if request.form["old_avatar"] != "None":
+                os.remove("static/images/" + request.form["old_avatar"])
         else:
-            avatar_filename = request.form['old_avatar']
+            avatar_filename = request.form["old_avatar"]
 
         with create_connection() as connection:
             with connection.cursor() as cursor:
-             if request.form['password']:
-                password = request.form['password']
-                encrypted_password = hashlib.sha256(password.encode()).hexdigest()
-                sql = """UPDATE users SET
+                if request.form["password"]:
+                    password = request.form["password"]
+                    encrypted_password = hashlib.sha256(password.encode()).hexdigest()
+                    sql = """UPDATE users SET
                     first_name = %s,
                     last_name = %s,
                     email = %s,
                     password = %s,
+                    year_level = %s,
                     avatar = %s
                     WHERE id = %s"""
-                values = (
-                    request.form['first_name'],
-                    request.form['last_name'],
-                    request.form['email'],
-                    encrypted_password,
-                    avatar_filename,
-                    request.form['id']
-                    
-                )
-                cursor.execute(sql, values)
-                connection.commit()
-        return redirect('/dashboard')
+                    values = (
+                        request.form["first_name"],
+                        request.form["last_name"],
+                        request.form["email"],
+                        encrypted_password,
+                        request.form["year_level"],
+                        avatar_filename,
+                        request.form["id"],
+                    )
+                    cursor.execute(sql, values)
+                    connection.commit()
+        return redirect("/dashboard")
     else:
         with create_connection() as connection:
             with connection.cursor() as cursor:
                 sql = "SELECT * FROM users WHERE id = %s"
-                values = (request.args['id'])
+                values = request.args["id"]
                 cursor.execute(sql, values)
                 result = cursor.fetchone()
-        return render_template('users_edit.html', result=result)
+        return render_template("users_edit.html", result=result)
 
 
 # Editing the subject
-@app.route('/subject_edit', methods=['GET', 'POST'])
+@app.route("/subject_edit", methods=["GET", "POST"])
 def subject_edit():
-    if session['role'] != 'admin' and str(session['id']) != request.args['id']:
+    if session["role"] != "admin" and str(session["id"]) != request.args["id"]:
         return abort(404)
     else:
-        if request.method == 'POST':
+        if request.method == "POST":
             with create_connection() as connection:
                 with connection.cursor() as cursor:
                     sql = """UPDATE subjects SET
@@ -376,82 +387,78 @@ def subject_edit():
                         year_level = %s
                         WHERE id = %s"""
                     values = (
-                        request.form['Name'],
-                        request.form['Credits'],
-                        request.form['Teacher'],
-                        request.form['Summary'],
-                        request.form['year_level'],
-                        request.form['id']
-                    
+                        request.form["Name"],
+                        request.form["Credits"],
+                        request.form["Teacher"],
+                        request.form["Summary"],
+                        request.form["year_level"],
+                        request.form["id"],
                     )
                     cursor.execute(sql, values)
                     connection.commit()
-            return redirect('/admin_subject_view')
+            return redirect("/admin_subject_list")
         else:
             with create_connection() as connection:
                 with connection.cursor() as cursor:
                     sql = "SELECT * FROM subjects WHERE id = %s"
-                    values = (request.args['id'])
+                    values = request.args["id"]
                     cursor.execute(sql, values)
                     result = cursor.fetchone()
-            return render_template('subject_edit.html', result=result)
+            return render_template("subject_edit.html", result=result)
 
 
 # limiting subject selection and then adding the subject
-@app.route('/subject_vaildate')
+@app.route("/subject_vaildate")
 def vaildate():
     with create_connection() as connection:
         with connection.cursor() as cursor:
-                sql = """SELECT users.first_name, subjects.Name FROM joining
+            sql = """SELECT users.first_name, subjects.Name FROM joining
     JOIN users ON joining.usersid = users.id
     JOIN subjects ON joining.subjectid = subjects.id WHERE usersid = %s"""
-                values = (session['id'])
-                cursor.execute(sql, values)
-                result = cursor.fetchall() 
-                if len(result) < 5:
-                    sql =  """INSERT INTO joining 
+            values = session["id"]
+            cursor.execute(sql, values)
+            result = cursor.fetchall()
+            if len(result) < 5:
+                sql = """INSERT INTO joining
                         (usersid, subjectid)
                         VALUES (%s, %s)
                         """
-                    values = (session['id'], 
-                              request.args['id'])
-                    try:
-                        cursor.execute(sql, values)
-                        connection.commit()
-                    except pymysql.err.IntegrityError:
-                        flash('you already have this subject')
-                else:
-                    flash('Limit of 5 subjects reached.')
-                    return redirect('/show')
-    flash('Selected')
-    return redirect('/')
-
-
-@app.route('/checkemail')
-def check_email():
-        with create_connection() as connection:
-            with connection.cursor() as cursor:
-                sql = "SELECT * FROM users WHERE email=%s"
-                values = (
-                    request.args['email']
-                    )
-                cursor.execute(sql, values)
-                result = cursor.fetchone()
-            if result:
-                return jsonify({ 'status': 'Error' })
+                values = (session["id"], request.args["id"])
+                try:
+                    cursor.execute(sql, values)
+                    connection.commit()
+                except pymysql.err.IntegrityError:
+                    flash("you already have this subject")
             else:
-                return jsonify({ 'status': 'OK' })
-    
+                flash("Limit of 5 subjects reached.")
+                return redirect("/show")
+    flash("Selected")
+    return redirect("/")
 
-if __name__ == '__main__':
+
+@app.route("/checkemail")
+def check_email():
+    with create_connection() as connection:
+        with connection.cursor() as cursor:
+            sql = "SELECT * FROM users WHERE email=%s"
+            values = request.args["email"]
+            cursor.execute(sql, values)
+            result = cursor.fetchone()
+        if result:
+            return jsonify({"status": "Error"})
+        else:
+            return jsonify({"status": "OK"})
+
+
+if __name__ == "__main__":
     import os
 
     # This is required to allow flashing messages. We will cover this later.
     app.secret_key = os.urandom(32)
 
-    HOST = os.environ.get('SERVER_HOST', 'localhost')
+    HOST = os.environ.get("SERVER_HOST", "localhost")
     try:
-        PORT = int(os.environ.get('SERVER_PORT', '5555'))
+        PORT = int(os.environ.get("SERVER_PORT", "5555"))
     except ValueError:
         PORT = 5555
     app.run(HOST, PORT, debug=True)
