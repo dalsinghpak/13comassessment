@@ -192,9 +192,29 @@ def subject_view():
                 result = cursor.fetchall()  
         return render_template('subject_view.html', result=result)
 
-# Lets admin view all subjects
+
+# admin can filter students by subject
 @app.route('/admin_subject_view')
 def admin_subject_view():
+    if session['role'] == 'admin':
+        with create_connection() as connection:
+            with connection.cursor() as cursor:
+                sql = """SELECT joining.id, users.first_name, subjects.Name FROM joining
+    JOIN users ON joining.usersid = users.id
+    JOIN subjects ON joining.subjectid = subjects.id WHERE subjectid = %s"""
+                values = (request.args['id'])
+                cursor.execute(sql, values)
+                result = cursor.fetchall()
+                sql1 = """SELECT * FROM subjects WHERE id = %s"""
+                values1 = (request.args['id'])
+                cursor.execute(sql1, values1)
+                result1 = cursor.fetchone()               
+        return render_template('admin_subject_view.html', result=result,  result1=result1)
+
+
+# Lets admin view all subjects
+@app.route('/admin_subject_list')
+def admin_subject_list():
     if session['role'] == 'admin':
         with create_connection() as connection:
             with connection.cursor() as cursor:
@@ -202,7 +222,9 @@ def admin_subject_view():
                 values = ()
                 cursor.execute(sql, values)
                 result = cursor.fetchall() 
-        return render_template('admin_subject_view.html', result=result)
+        return render_template('admin_subject_list.html', result=result)
+
+
 # Admin can see their subjects
 @app.route('/subjectviewad')
 def subject_viewad():
@@ -222,6 +244,7 @@ def subject_viewad():
             result1 = cursor.fetchone() 
     return render_template('subject_viewad.html', result=result, result1=result1)
 
+
 # TODO: Add a '/profile' (view_user) route that uses SELECT
 @app.route('/view')
 def view_user():
@@ -238,6 +261,8 @@ def view_user():
             cursor.execute(sql1, values1)
             result1 = cursor.fetchone()
     return render_template('users_view.html', result=result, result1=result1)
+
+
 # Add a '/delete_user' route that uses DELETE
 @app.route('/delete')
 def delete():
@@ -248,6 +273,20 @@ def delete():
             cursor.execute(sql, values)
             connection.commit()
     return redirect('/')
+
+
+# lets admin delete a subject
+@app.route('/delete_subject')
+def delete_subject():
+    with create_connection() as connection:
+        with connection.cursor() as cursor:
+            sql = """DELETE FROM subjects WHERE id = %s"""
+            values = (request.args['id'])
+            cursor.execute(sql, values)
+            connection.commit()
+    return redirect('/')
+
+
 # users can add their subject
 @app.route('/add')
 def add():
@@ -270,7 +309,7 @@ def add():
     return redirect('/')
 
 
-# TODO: Add an '/edit_user' route that uses UPDATE
+# lets user admin update student details
 @app.route('/edit_user', methods=['GET', 'POST'])
 def edit_user():
     if session['role'] != 'admin' and str(session['id']) != request.args['id']:
@@ -323,36 +362,40 @@ def edit_user():
 # Editing the subject
 @app.route('/subject_edit', methods=['GET', 'POST'])
 def subject_edit():
-    if request.method == 'POST':
-        with create_connection() as connection:
-            with connection.cursor() as cursor:
-                sql = """UPDATE subjects SET
-                    Name = %s,
-                    Credits = %s,
-                    Teacher = %s,
-                    Summary = %s,
-                    year_level = %s
-                    WHERE id = %s"""
-                values = (
-                    request.form['Name'],
-                    request.form['Credits'],
-                    request.form['Teacher'],
-                    request.form['Summary'],
-                    request.form['year_level'],
-                    request.form['id']
-                    
-                )
-                cursor.execute(sql, values)
-                connection.commit()
-        return redirect('/admin_subject_view')
+    if session['role'] != 'admin' and str(session['id']) != request.args['id']:
+        return abort(404)
     else:
-        with create_connection() as connection:
-            with connection.cursor() as cursor:
-                sql = "SELECT * FROM subjects WHERE id = %s"
-                values = (request.args['id'])
-                cursor.execute(sql, values)
-                result = cursor.fetchone()
-        return render_template('subject_edit.html', result=result)
+        if request.method == 'POST':
+            with create_connection() as connection:
+                with connection.cursor() as cursor:
+                    sql = """UPDATE subjects SET
+                        Name = %s,
+                        Credits = %s,
+                        Teacher = %s,
+                        Summary = %s,
+                        year_level = %s
+                        WHERE id = %s"""
+                    values = (
+                        request.form['Name'],
+                        request.form['Credits'],
+                        request.form['Teacher'],
+                        request.form['Summary'],
+                        request.form['year_level'],
+                        request.form['id']
+                    
+                    )
+                    cursor.execute(sql, values)
+                    connection.commit()
+            return redirect('/admin_subject_view')
+        else:
+            with create_connection() as connection:
+                with connection.cursor() as cursor:
+                    sql = "SELECT * FROM subjects WHERE id = %s"
+                    values = (request.args['id'])
+                    cursor.execute(sql, values)
+                    result = cursor.fetchone()
+            return render_template('subject_edit.html', result=result)
+
 
 # limiting subject selection and then adding the subject
 @app.route('/subject_vaildate')
@@ -382,6 +425,7 @@ def vaildate():
                     return redirect('/show')
     flash('Selected')
     return redirect('/')
+
 
 @app.route('/checkemail')
 def check_email():

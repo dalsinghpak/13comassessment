@@ -1,0 +1,36 @@
+{% extends '_layout.html' %}
+
+{% block title %}Admin Subject view{% endblock %}
+
+{% block content %}
+<table>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>credits</th>
+            <th>teacher</th>
+            <th>summary</th>
+            <th colspan="2">Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for row in result %}
+        <tr>
+            <td>{{ row.Name }}</td>
+            <td>{{ row.Credits }}</td>
+            <td>{{ row.Teacher }}</td>
+            <td>{{ row.Summary }}</td>
+            <td>
+                <a href="/admin_subject_view?id={{ row.id }}">View student who have selected this subject</a>
+                <a href="/subject_edit?id={{ row.id }}">Edit</a>
+                <a href="/delete_subject?id={{ row.id }}"
+                   onclick="return confirm('Are you sure you wish to delete {{ row.Name }}?')">
+                    Delete
+                </a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}

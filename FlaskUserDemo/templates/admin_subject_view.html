@@ -1,29 +1,32 @@
 {% extends '_layout.html' %}
 
-{% block title %}Admin Subject view{% endblock %}
+{% block title %}View subject{% endblock %}
 
 {% block content %}
+{% if session['role'] == 'admin' %}
+<h1>Hello Admin</h1>
+<h2>{{ result1.Name }}</h2>
+{% endif %}
 <table>
     <thead>
         <tr>
-            <th>Name</th>
-            <th>credits</th>
-            <th>teacher</th>
-            <th>summary</th>
-            <th colspan="2">Actions</th>
+            {% if session['role'] == 'admin' %}
+            <th>First Name</th>
+            {% endif %}
+            <th>Subjects selected</th>
         </tr>
     </thead>
     <tbody>
         {% for row in result %}
         <tr>
+            {% if session['role'] == 'admin' %}
+            <td>{{ row.first_name }}</td>
+
+            {% endif %}
             <td>{{ row.Name }}</td>
-            <td>{{ row.Credits }}</td>
-            <td>{{ row.Teacher }}</td>
-            <td>{{ row.Summary }}</td>
             <td>
-                <a href="/subject_edit?id={{ row.id }}">Edit</a>
                 <a href="/delete?id={{ row.id }}"
-                   onclick="return confirm('Are you sure you wish to delete {{ row.first_name }}?')">
+                   onclick="return confirm('Do you want to delete {{ row.Name }}?')">
                     Delete
                 </a>
             </td>
