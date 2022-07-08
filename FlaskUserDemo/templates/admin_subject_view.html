@@ -26,7 +26,7 @@
             <td>{{ row.Name }}</td>
             <td>
                 <a href="/delete?id={{ row.id }}"
-                   onclick="return confirm('Do you want to delete {{ row.Name }}?')">
+                   onclick="return confirm('Do you want to delete {{ row.first_name }} from {{row.Name }}?')">
                     Delete
                 </a>
             </td>

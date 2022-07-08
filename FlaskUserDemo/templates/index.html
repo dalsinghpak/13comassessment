@@ -12,8 +12,11 @@
 <div class="row">
     <div class="col-md-12">
         <a href="{{ url_for('list_users')}}">View all users</a>
-        <a href="{{ url_for('subject_view')}}">View all user movies</a>
-        <a href="{{ url_for('subject_viewad')}}">View all your movies</a>
+        <a href="{{ url_for('subject_view')}}">View all user subjects</a>
+        <a href="{{ url_for('subject_viewad')}}">View all your subjects</a>
+        <a href="{{ url_for('subject_add')}}">Add subjects</a>
+        <a href="{{ url_for('admin_subject_list')}}">List of all subjects</a>
+        <a href="{{ url_for('subject_viewad')}}">View all your subjects</a>
     </div>
 </div>
 {% endif %}
