@@ -31,13 +31,13 @@ def restrict():
 def home():
     return render_template("index.html")
 
-
+# login to the website
 @app.route("/login", methods={"GET", "POST"})
 def login():
     if request.method == "POST":
 
         password = request.form["password"]
-        encrypted_password = hashlib.sha256(password.encode()).hexdigest()
+        encrypted_password = hashlib.sha256(password.encode()).hexdigest() # encrypts password
 
         with create_connection() as connection:
             with connection.cursor() as cursor:
@@ -160,7 +160,7 @@ def list_users():
 @app.route("/subject_select")
 def subject_select():
     datenow = datetime.now() # get todays date
-    duedate = datetime(2022, 7, 6, 23, 59, 59) # 1 second before midnight on that date
+    duedate = datetime(2022, 7, 10, 23, 59, 59) # 1 second before midnight on that date
     startdate = datetime(2022, 7, 6)
     if datenow <= duedate and datenow >= startdate:
         with create_connection() as connection:
@@ -256,7 +256,7 @@ def subject_viewad():
     return render_template("subject_viewad.html", result=result, result1=result1)
 
 
-# TODO: Add a '/profile' (view_user) route that uses SELECT
+# view profile this shows all details of the user
 @app.route("/view")
 def view_user():
     with create_connection() as connection:
@@ -274,7 +274,7 @@ def view_user():
     return render_template("users_view.html", result=result, result1=result1)
 
 
-# Add a '/delete_user' route that uses DELETE
+# deleting subject and student from joing table
 @app.route("/delete")
 def delete():
     with create_connection() as connection:
@@ -285,6 +285,16 @@ def delete():
             connection.commit()
     return redirect("/")
 
+# deletes user profile
+@app.route("/delete_user")
+def delete_user():
+    with create_connection() as connection:
+        with connection.cursor() as cursor:
+            sql = """DELETE FROM users WHERE id = %s"""
+            values = request.args["id"]
+            cursor.execute(sql, values)
+            connection.commit()
+    return redirect("/")
 
 # lets admin delete a subject
 @app.route("/delete_subject")
