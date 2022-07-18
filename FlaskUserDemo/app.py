@@ -65,15 +65,15 @@ def logout():
     return redirect("/")
 
 
-# TODO: Add a '/register' (add_user) route that uses INSERT
+# allows the user to sign up
 @app.route("/register", methods=["GET", "POST"])
 def add_user():
 
     if request.method == "POST":
-
+        # encrypts the password
         password = request.form["password"]
-        encrypted_password = hashlib.sha256(password.encode()).hexdigest()
-
+        encrypted_password = hashlib.sha256(password.encode()).hexdigest() 
+        # for avatar image name
         if request.files["avatar"].filename:
             avatar_image = request.files["avatar"]
             ext = os.path.splitext(avatar_image.filename)[1]
@@ -105,6 +105,7 @@ def add_user():
                 values = (request.form["email"], encrypted_password)
                 cursor.execute(sql, values)
                 result = cursor.fetchone()
+        # auto login for user after signing up
         if result:
             session["logged_in"] = True
             session["first_name"] = result["first_name"]
@@ -137,6 +138,7 @@ def subject_add():
                 try:
                     cursor.execute(sql, values)
                     connection.commit()
+                # solves integrity error
                 except pymysql.err.IntegrityError:
                     flash("Subject already added")
                     return redirect("/subject_add")
@@ -145,7 +147,7 @@ def subject_add():
     return render_template("admin_subject_add.html")
 
 
-# TODO: Add a '/dashboard' (list_users) route that uses SELECT
+# list all users and all data
 @app.route("/dashboard")
 def list_users():
     if session["role"] != "admin":
@@ -156,11 +158,14 @@ def list_users():
             result = cursor.fetchall()
     return render_template("users_list.html", result=result)
 
-
+# allow the user to select an subject
 @app.route("/subject_select")
 def subject_select():
-    datenow = datetime.now() # get todays date
-    duedate = datetime(2022, 7, 10, 23, 59, 59) # 1 second before midnight on that date
+    # get todays date
+    datenow = datetime.now() 
+    # 1 second before midnight on that date
+    duedate = datetime(2022, 7, 10, 23, 59, 59) 
+    # start date
     startdate = datetime(2022, 7, 6)
     if datenow <= duedate and datenow >= startdate:
         with create_connection() as connection:
@@ -213,7 +218,8 @@ def admin_subject_view():
     JOIN subjects ON joining.subjectid = subjects.id WHERE subjectid = %s"""
                 values = request.args["id"]
                 cursor.execute(sql, values)
-                result = cursor.fetchall()
+                result = cursor.fetchall() 
+                # need 2 sql querys to avoid tuple error
                 sql1 = """SELECT * FROM subjects WHERE id = %s"""
                 values1 = request.args["id"]
                 cursor.execute(sql1, values1)
@@ -428,6 +434,7 @@ def vaildate():
             values = session["id"]
             cursor.execute(sql, values)
             result = cursor.fetchall()
+            # limit number
             if len(result) < 5:
                 sql = """INSERT INTO joining
                         (usersid, subjectid)
@@ -445,7 +452,7 @@ def vaildate():
     flash("Selected")
     return redirect("/")
 
-
+# checks weather email is already in use
 @app.route("/checkemail")
 def check_email():
     with create_connection() as connection:
@@ -463,7 +470,7 @@ def check_email():
 if __name__ == "__main__":
     import os
 
-    # This is required to allow flashing messages. We will cover this later.
+    # This is required to allow flashing messages.
     app.secret_key = os.urandom(32)
 
     HOST = os.environ.get("SERVER_HOST", "localhost")
