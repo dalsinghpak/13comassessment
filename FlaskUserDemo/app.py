@@ -19,14 +19,14 @@ from utils import create_connection, setup
 
 app.register_blueprint(setup)
 
-
+# setting up restricted pages
 @app.before_request
 def restrict():
     restricted_pages = ["list_users", "view_user", "delete", "edit_user"]
     if "logged_in" not in session and request.endpoint in restricted_pages:
         return redirect("/login")
 
-
+# home
 @app.route("/")
 def home():
     return render_template("index.html")
@@ -338,9 +338,11 @@ def add():
 # lets user admin update student details
 @app.route("/edit_user", methods=["GET", "POST"])
 def edit_user():
-    if session["role"] != "admin" and str(session["id"]) != request.args["id"]:
+    # checks whether admin is accessing
+    if session["role"] != "admin" and str(session["id"]) != request.args["id"]: 
         return abort(404)
     if request.method == "POST":
+        # for avatar image
         if request.files["avatar"].filename:
             avatar_image = request.files["avatar"]
             ext = os.path.splitext(avatar_image.filename)[1]
@@ -350,7 +352,6 @@ def edit_user():
                 os.remove("static/images/" + request.form["old_avatar"])
         else:
             avatar_filename = request.form["old_avatar"]
-
         with create_connection() as connection:
             with connection.cursor() as cursor:
                 if request.form["password"]:
