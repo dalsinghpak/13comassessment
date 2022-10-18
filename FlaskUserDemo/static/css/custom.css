@@ -16,14 +16,29 @@ tr {
 .formbox {
     text-align: -webkit-center;
 }
-body{
-   background:antiquewhite;
+.row {
+    display: flex;
+    flex-wrap: wrap;
+    padding: 0 4px;
+}
+.column {
+    flex: 25%;
+    max-width: 25%;
+    padding: 0 4px;
+}
+body {
+    background: white;
+    color:black;
+}
+.dark-mode {
+    background-color: rgba(10, 10, 10, 0.85);
+    color: white;
 }
 form {
     width: 14rem;
     padding: 10px;
     margin: 15% auto;
-    background: white;
+    background: rgba(10, 10, 10, 0.85);
     border-radius: 10px
 }
 input[type=email] {

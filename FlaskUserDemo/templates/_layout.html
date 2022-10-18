@@ -11,7 +11,20 @@
 
     <link rel="stylesheet" href="{{ url_for('static', filename='css/custom.css') }}">
 </head>
-<body>
+<body {% if request.cookies['mode'] == 'dark' %} class="dark-mode" {% endif %}>
+    <button onclick="myFunction()">Toggle dark mode</button>
+    <script>
+        function myFunction() {
+            var element = document.body;
+            element.classList.toggle("dark-mode");
+            if (element.classList.contains('dark-mode')) {
+                document.cookie = "mode=dark";
+            } else {
+                document.cookie = "mode=light";
+            }
+        }
+
+    </script>
     <!--<nav>
         {% if 'logged_in' in session %}
         You are logged in as {{ session.first_name }}
