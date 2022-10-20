@@ -22,31 +22,29 @@
 {% endif %}
 <div class="row">
     <div class="column">
-       <div class='title'>
-           <h2>Useful Infomation</h2>
-           <h4>
-               Deadlines:
-
-               Students must complete their 2023 subject selection by the following dates:
-
-               Current Y12     Friday 12th August
-               Current Y11     Friday 12th August
-               Current Y10     Friday 9th September
-               Current Y9       Friday 28th October
-               NB* Option selection will open two weeks prior to the deadline.
-
-
-
-               Getting Started with Online Course Selection:
-
-               It's good to involve your parents in the course selection process.  Remember courses selected because "my mates are doing it” do you no good at all.
-
-               It's also a good idea to speak to your teachers about your choices, especially when trying to determine the most suitable maths, English and science courses.
-
-               Your careers advisors can provide guidance and will meet with each of you after you have made your initial selection.
-           </h4>
-       </div>
+        <div class='infomation' style="background-color: rgba(10, 10, 10, 0.7)">
+            <h2>Useful Infomation</h2>
+            <p><strong>Deadlines:</strong></p>
+            <p><span style="text-decoration: underline;">Students must complete their 2023 subject selection by the following dates:</span></p>
+            <p>Current Y12 Friday 12th August<br /> Current Y11 Friday 12th August<br /> Current Y10 Friday 9th September<br /> Current Y9 Friday 28th October<br /> NB* Option selection will open two weeks prior to the deadline.</p>
+            <p>&nbsp;</p>
+            <p><strong>Getting Started with Online Course Selection:</strong></p>
+            <p>It's good to involve your parents in the course selection process. Remember courses selected because "my mates are doing it&rdquo; do you no good at all.</p>
+            <p>It's also a good idea to speak to your teachers about your choices, especially when trying to determine the most suitable maths, English and science courses.</p>
+            <p>Your careers advisors can provide guidance and will meet with each of you after you have made your initial selection.</p>
+        </div>
+        </div>
+    <div class="column2">
+        <div class="col-md-12 d-flex">
+           
+                
+            <a href="{{ url_for('subject_select') }}"><img src="static/images/ssi.png" alt="img1" class="indexclickhere"></a>
+            <a href="{{ url_for('subject_view') }}"><img src="static/images/vsi.png" alt="img2" class="indexclickhere"></a>
+               
+       
     </div>
-</div>
+    </div>
+    </div>
+
 
 {% endblock %}

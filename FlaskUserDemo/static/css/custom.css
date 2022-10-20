@@ -22,13 +22,30 @@ tr {
     padding: 0 4px;
 }
 .column {
-    flex: 25%;
-    max-width: 25%;
-    padding: 0 4px;
+    text-align: center;
+    flex: 100%;
+    max-width: 100%;
+    padding: 10px 50px;
+}
+.column2 {
+    flex: 100%;
+    padding: 10px 50px;
+    
+}
+.col-md-12 {
+    gap: 5px;
+}
+.infomation{
+    padding: 10px 10px 10px 10px;
 }
 body {
+    margin: 0 auto 0 auto;
     background: white;
-    color:black;
+    color:white;
+}
+.row {
+    max-width: 50%;
+    margin: auto;
 }
 .dark-mode {
     background-color: rgba(10, 10, 10, 0.85);
@@ -127,3 +144,17 @@ aside {
     font-size: 1.0rem;
     animation: fade-out 3s 5s both;
 }
+
+.indexclickhere {
+    max-width: 100%;
+    height: auto;
+    margin: auto;
+    transition-duration: 0.3s;
+    transition-property: transform;
+}
+
+    .indexclickhere:hover {
+        -ms-transform: scale(1.2); /* IE 9 */
+        -webkit-transform: scale(1.2); /* Safari 3-8 */
+        transform: scale(1.2);
+    }

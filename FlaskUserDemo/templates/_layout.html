@@ -34,7 +34,7 @@
     </nav>-->
     {% if 'logged_in' in session %}
     <nav class="navbar navbar-expand-lg navbar-light bg-light" style="padding: 10px;border-radius: 10px;">
-        <a class="navbar-brand" href="#">Movies Diary</a>
+        <a class="navbar-brand" href="#">Subject selection</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -42,7 +42,7 @@
             <div class="navbar-nav">
                 <a class="nav-item nav-link" href="/">Home</a>
                 <a class="nav-item nav-link" href="{{ url_for('subject_select') }}">Subject Selection</a>
-                <a class="nav-item nav-link" href="/subject_view">View your movies</a>
+                <a class="nav-item nav-link" href="/subject_view">View your Subject</a>
             </div>
         </div>
     </nav>
