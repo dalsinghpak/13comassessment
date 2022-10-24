@@ -3,6 +3,16 @@
 {% block title %}Dashboard{% endblock %}
 
 {% block content %}
+<div class="container-fluid">
+    <div class="jumbotron text-center" >
+        <div class="container2" style="background-color: rgba(10, 10, 10, 0.7)"></div>
+        <h2 class="banner-text">
+            <p style="text-align: center;"><strong>Pakuranga College&nbsp;</strong></p>
+            <p style="text-align: center;">Subject Selection</p>
+        </h2>
+            
+    </div>
+</div>
 {% if 'logged_in' not in session %}
 <a href="{{ url_for('add_user') }}">Sign Up</a>
 <a href="{{ url_for('login') }}">Login</a>

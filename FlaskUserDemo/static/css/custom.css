@@ -5,7 +5,23 @@ table {
 th, td {
     border: 1px solid black;
 }
-
+.jumbotron {
+    background-image: url("indexbg.png");
+    height: 480px;
+    background-repeat: no-repeat;
+}
+.banner-text{
+    position: absolute;
+    top: 30%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+.container2 {
+    position: absolute;
+    top: 30%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
 tr {
     background-color: #ddd;
 }
