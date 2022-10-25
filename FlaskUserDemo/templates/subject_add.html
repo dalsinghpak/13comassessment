@@ -3,6 +3,16 @@
 {% block title %}Dashboard{% endblock %}
 
 {% block content %}
+<div class="container-fluid">
+    <div class="jumbotron text-center">
+        <div class="container2" style="background-color: rgba(10, 10, 10, 0.7)"></div>
+        <h2 class="banner-text">
+            <p style="text-align: center;"><strong>Pakuranga College&nbsp;</strong></p>
+            <p style="text-align: center;">Select a Subject</p>
+        </h2>
+
+    </div>
+</div>
 <table>
     <thead>
         <tr>
@@ -22,7 +32,7 @@
             <td>{{ row.Summary }}</td>
             <td>
                 <a href="/subject_vaildate?id={{ row.id }}"
-                   onclick="return confirm('Dow you want to add {{ row.Name }}?')">
+                   onclick="return confirm('Do you want to add {{ row.Name }}?')">
                     Add
                 </a>
             </td>
@@ -31,4 +41,44 @@
     </tbody>
 </table>
 
-{% endblock %}
+<select name="year_level">
+    {% for year in years %}
+    <option>{{ year }}</option>
+    {% endfor %}
+</select>
+
+
+<select name="subject_id">
+    {% for row in result %}
+    <option data-year="{{ row.year_level }}" value="{{ row.id }}" name="id">{{ row.Name }}</option>
+    {% endfor %}
+    
+</select>
+<a href="/subject_vaildate?id="#id"">
+    Add
+</a>
+<script>
+    let yearSelector = document.querySelector('select[name="year_level"]');
+
+    yearSelector.addEventListener('change', chooseDropdown);
+
+    function chooseDropdown() {
+        document.querySelectorAll('option[data-year]').forEach(makeInvisible);
+
+        document.querySelectorAll('option[data-year="' + yearSelector.value + '"]').forEach(makeVisible);
+
+        document.querySelector('select[name="subject_id"]').value = '';
+    }
+
+    function makeInvisible(dropdown) {
+        dropdown.style.display = 'none';
+    }
+    function makeVisible(theDropdownWeWant) {
+        theDropdownWeWant.style.display = '';
+    }
+
+    chooseDropdown();
+
+</script>
+
+    {% endblock %}

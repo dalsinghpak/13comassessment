@@ -164,7 +164,7 @@ def subject_select():
     # get todays date
     datenow = datetime.now() 
     # 1 second before midnight on that date
-    duedate = datetime(2022, 7, 10, 23, 59, 59) 
+    duedate = datetime(2022, 12, 10, 23, 59, 59) 
     # start date
     startdate = datetime(2022, 7, 6)
     if datenow <= duedate and datenow >= startdate:
@@ -172,7 +172,8 @@ def subject_select():
             with connection.cursor() as cursor:
                 cursor.execute("SELECT * FROM subjects")
                 result = cursor.fetchall()
-        return render_template("subject_add.html", result=result)
+        print(result)
+        return render_template("subject_add.html", result=result, years=({row['year_level'] for row in result}))
     else:
         return render_template("selection_expired.html")
 

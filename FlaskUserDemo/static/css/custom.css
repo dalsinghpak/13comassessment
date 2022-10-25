@@ -10,11 +10,43 @@ th, td {
     height: 480px;
     background-repeat: no-repeat;
 }
-.banner-text{
+.banner-text {
     position: absolute;
     top: 30%;
     left: 50%;
     transform: translate(-50%, -50%);
+    padding: 10px 10px 10px 10px;
+    margin: auto;
+    text-align: center;
+    background-color: rgba(10, 10, 10, 0.9);
+    width:500px;
+    height: auto;
+}
+#header {
+    color: #ffffff;
+    -webkit-align-items: center;
+    align-items: center;
+    user-select: none;
+    height: 20rem;
+    padding-bottom: 8rem;
+    position: relative;
+    text-align: center;
+    z-index: 2;
+}
+#header .logo {
+    text-decoration: none;
+    pointer-events: auto;
+    border-style: solid;
+    border-color: #ffffff;
+    border-width: 5px !important;
+    font-family: "Source Sans Pro", Helvetica, sans-serif;
+    font-size: 5rem;
+    font-weight: 900;
+    letter-spacing: 0.075em;
+    line-height: 1;
+    padding: 1rem 1.75rem;
+    text-transform: uppercase;
+    visibility: visible;
 }
 .container2 {
     position: absolute;

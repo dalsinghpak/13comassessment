@@ -11,7 +11,7 @@
 
     <link rel="stylesheet" href="{{ url_for('static', filename='css/custom.css') }}">
 </head>
-<body {% if request.cookies['mode'] == 'dark' %} class="dark-mode" {% endif %}>
+<body {% if request.cookies['mode']=='dark' %} class="dark-mode" {% endif %}>
     <button onclick="myFunction()">Toggle dark mode</button>
     <script>
         function myFunction() {
