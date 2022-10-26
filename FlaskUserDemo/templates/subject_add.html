@@ -41,43 +41,69 @@
     </tbody>
 </table>
 
-<select name="year_level">
-    {% for year in years %}
-    <option>{{ year }}</option>
-    {% endfor %}
-</select>
+<form method="post" action="/subject_validate">
+    <select name="year_level">
+        {% for year in years %}
+        <option>{{ year }}</option>
+        {% endfor %}
+    </select>
+
+    <select name="faculty_name" id="faculty_selector">
+        {% for faculty in faculties %}
+        <option>{{ faculty }}</option>
+        {% endfor %}
+    </select>
+
+    <select name="subject_id">
+        {% for row in result %}
+        <option data-year="{{ row.year_level }}" data-faculty="{{ row.Faculty }}" value="{{ row.id }}" name="id">{{ row.Name }}</option>
+        {% endfor %}
+
+    </select>
+    <button type="submit">Add</button>
+</form>
+
+{% for row in result %}
+<div data-subject="{{ row.id }}">
+    {{ row.Credits }} {{ row.Summary }}
+</div>
+{% endfor %}
 
 
-<select name="subject_id">
-    {% for row in result %}
-    <option data-year="{{ row.year_level }}" value="{{ row.id }}" name="id">{{ row.Name }}</option>
-    {% endfor %}
-    
-</select>
-<a href="/subject_vaildate?id="#id"">
-    Add
-</a>
+
 <script>
-    let yearSelector = document.querySelector('select[name="year_level"]');
+    let yearDropdown = document.querySelector('select[name="year_level"]');
+    let facultyDropdown = document.querySelector('select[name="faculty_name"]');
+    let subjectDropdown = document.querySelector('select[name="subject_id"]');
 
-    yearSelector.addEventListener('change', chooseDropdown);
+    yearDropdown.addEventListener('change', filterSubjects);
+    facultyDropdown.addEventListener('change', filterSubjects);
+    subjectDropdown.addEventListener('change', displaySubject);
 
-    function chooseDropdown() {
+    function filterSubjects() {
         document.querySelectorAll('option[data-year]').forEach(makeInvisible);
 
-        document.querySelectorAll('option[data-year="' + yearSelector.value + '"]').forEach(makeVisible);
+        document.querySelectorAll('option[data-year="' + yearDropdown.value + '"][data-faculty="' + facultyDropdown.value + '"]').forEach(makeVisible);
 
-        document.querySelector('select[name="subject_id"]').value = '';
+        subjectDropdown.value = [...document.querySelectorAll('select[name="subject_id"] option')].find(o => !o.style.display)?.value || '';
+        displaySubject();
     }
 
-    function makeInvisible(dropdown) {
-        dropdown.style.display = 'none';
-    }
-    function makeVisible(theDropdownWeWant) {
-        theDropdownWeWant.style.display = '';
+    function displaySubject() {
+        console.log(subjectDropdown.value, document.querySelectorAll('div[data-subject="' + subjectDropdown.value + '"]'))
+        document.querySelectorAll('div[data-subject]').forEach(makeInvisible);
+        document.querySelectorAll('div[data-subject="' + subjectDropdown.value + '"]').forEach(makeVisible);
     }
 
-    chooseDropdown();
+    function makeInvisible(el) {
+        el.style.display = 'none';
+    }
+    function makeVisible(el) {
+        el.style.display = '';
+    }
+
+
+    filterSubjects();
 
 </script>
 

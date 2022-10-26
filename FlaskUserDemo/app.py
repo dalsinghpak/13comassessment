@@ -173,7 +173,7 @@ def subject_select():
                 cursor.execute("SELECT * FROM subjects")
                 result = cursor.fetchall()
         print(result)
-        return render_template("subject_add.html", result=result, years=({row['year_level'] for row in result}))
+        return render_template("subject_add.html", result=result, years=({row['year_level'] for row in result}), faculties=({row['Faculty'] for row in result}))
     else:
         return render_template("selection_expired.html")
 
@@ -426,7 +426,7 @@ def subject_edit():
 
 
 # limiting subject selection and then adding the subject
-@app.route("/subject_vaildate")
+@app.route("/subject_validate", methods=['POST'])
 def vaildate():
     with create_connection() as connection:
         with connection.cursor() as cursor:
@@ -436,13 +436,15 @@ def vaildate():
             values = session["id"]
             cursor.execute(sql, values)
             result = cursor.fetchall()
+
+            print(request.form)
             # limit number
             if len(result) < 5:
                 sql = """INSERT INTO joining
                         (usersid, subjectid)
                         VALUES (%s, %s)
                         """
-                values = (session["id"], request.args["id"])
+                values = (session["id"], request.form["subject_id"])
                 try:
                     cursor.execute(sql, values)
                     connection.commit()
