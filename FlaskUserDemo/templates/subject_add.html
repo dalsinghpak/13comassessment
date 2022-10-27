@@ -13,34 +13,6 @@
 
     </div>
 </div>
-<table>
-    <thead>
-        <tr>
-            <th>Name</th>
-            <th>credits</th>
-            <th>teacher</th>
-            <th>summary</th>
-            <th colspan="2">Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for row in result %}
-        <tr>
-            <td>{{ row.Name }}</td>
-            <td>{{ row.Credits }}</td>
-            <td>{{ row.Teacher }}</td>
-            <td>{{ row.Summary }}</td>
-            <td>
-                <a href="/subject_vaildate?id={{ row.id }}"
-                   onclick="return confirm('Do you want to add {{ row.Name }}?')">
-                    Add
-                </a>
-            </td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
-
 <form method="post" action="/subject_validate">
     <select name="year_level">
         {% for year in years %}
@@ -60,11 +32,11 @@
         {% endfor %}
 
     </select>
-    <button type="submit">Add</button>
+    <input type="submit" value="Add">
 </form>
 
 {% for row in result %}
-<div data-subject="{{ row.id }}">
+<div  data-subject="{{ row.id }}">
     {{ row.Credits }} {{ row.Summary }}
 </div>
 {% endfor %}
