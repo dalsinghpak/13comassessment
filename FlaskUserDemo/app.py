@@ -53,7 +53,7 @@ def login():
             return redirect("/")
             flash("you finally got the password right")
         else:
-            flash("looks like someone has memory loss")
+            flash("Incorrect Password")
             return redirect("/login")
     else:
         return render_template("login.html")

@@ -3,35 +3,44 @@
 {% block title %}Dashboard{% endblock %}
 
 {% block content %}
-<table>
-    <thead>
-        <tr>
-            <th>First Name</th>
-            <th>Last Name</th>
-            <th>email</th>
-            <th>Password</th>
-            <th colspan="2">Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for row in result %}
-        <tr>
-            <td>{{ row.first_name }}</td>
-            <td>{{ row.last_name }}</td>
-            <td>{{ row.email }}</td>
-            <td>{{ row.password }}</td>
-            <td>
-                <a href="/view?id={{ row.id }}">View</a>
-                <a href="/edit_user?id={{ row.id }}">Edit</a>
-                <a href="/delete_user?id={{ row.id }}"
-                   onclick="return confirm('Are you sure you wish to delete {{ row.first_name }}?')">
-                    Delete
-                </a>
-            </td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+<div class="container-fluid">
+    <div class="jumbotron text-center">
+        <div class="container2" style="background-color: rgba(10, 10, 10, 0.7)"></div>
+        <h2 class="banner-text">
+            <p style="text-align: center;"><strong>Pakuranga College&nbsp;</strong></p>
+            <p style="text-align: center;">All Users</p>
+        </h2>
 
+    </div>
+</div>
+<div class="row" style="justify-content:center;">
+    <table>
+        <thead>
+            <tr>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>email</th>
+                <th colspan="2">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in result %}
+            <tr>
+                <td>{{ row.first_name }}</td>
+                <td>{{ row.last_name }}</td>
+                <td>{{ row.email }}</td>
+                <td>
+                    <a href="/view?id={{ row.id }}">View</a>
+                    <a href="/edit_user?id={{ row.id }}">Edit</a>
+                    <a href="/delete_user?id={{ row.id }}"
+                       onclick="return confirm('Are you sure you wish to delete {{ row.first_name }}?')">
+                        Delete
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
 
 {% endblock %}

@@ -13,34 +13,61 @@
 
     </div>
 </div>
-<form method="post" action="/subject_validate">
-    <select name="year_level">
-        {% for year in years %}
-        <option>{{ year }}</option>
-        {% endfor %}
-    </select>
 
-    <select name="faculty_name" id="faculty_selector">
-        {% for faculty in faculties %}
-        <option>{{ faculty }}</option>
-        {% endfor %}
-    </select>
+<div class="row">
+    <div class="col-md-8">
+        <form class="subjectselect" method="post" action="/subject_validate" style="text-align:center">
+            <label for="year_level">Year Level</label>
+            <br>
+            <select class="se" id="year_level" name="year_level">
+                {% for year in years %}
+                <option>{{ year }}</option>
+                {% endfor %}
+            </select>
+            <br>
+            <label for="faculty_selector">Faculty</label>
+            <br>
+            <select class="se" name="faculty_name" id="faculty_selector">
+                {% for faculty in faculties %}
+                <option>{{ faculty }}</option>
+                {% endfor %}
+            </select>
+            <br>
+            <label for="subject_id">Subject</label>
+            <br>
+            <select class="se" id="subject_id" name="subject_id">
+                {% for row in result %}
+                <option data-year="{{ row.year_level }}" data-faculty="{{ row.Faculty }}" value="{{ row.id }}" name="id">{{ row.Name }}</option>
+                {% endfor %}
 
-    <select name="subject_id">
-        {% for row in result %}
-        <option data-year="{{ row.year_level }}" data-faculty="{{ row.Faculty }}" value="{{ row.id }}" name="id">{{ row.Name }}</option>
-        {% endfor %}
-
-    </select>
-    <input type="submit" value="Add">
-</form>
-
-{% for row in result %}
-<div  data-subject="{{ row.id }}">
-    {{ row.Credits }} {{ row.Summary }}
+            </select>
+            <br>
+            <br>
+            <input type="submit" value="Add">
+        </form>
+    </div>
+    <div class="col-md-4">
+    {% for row in result %}
+        <div data-subject="{{ row.id }}">
+            <div class="row">
+                <div class="col-md-12">
+                    <h2>Credits Earned:</h2>
+                    <br>
+                    <h4>{{ row.Credits }}</h4>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <h2>Summary:</h2>
+                    <br>
+                    <h4>{{ row.Summary }}</h4>
+                </div>
+            </div>
+            
+        </div>
+    {% endfor %}
+    </div>
 </div>
-{% endfor %}
-
 
 
 <script>

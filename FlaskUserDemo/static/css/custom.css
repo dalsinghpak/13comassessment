@@ -88,8 +88,8 @@ tr {
 }
 body {
     margin: 0 auto 0 auto;
-    background: white;
-    color:white;
+    background-color: rgba(10, 10, 10, 0.85);
+    color: white;
 }
 .row {
     max-width: 50%;
@@ -152,6 +152,7 @@ input[type=submit] {
     border-radius: 5px;
     width: 100%;
 }
+
 /*css for file*/
 .addform {
     width: 14rem;
@@ -206,3 +207,75 @@ aside {
         -webkit-transform: scale(1.2); /* Safari 3-8 */
         transform: scale(1.2);
     }
+
+/* Create two equal columns that floats next to each other */
+.column3 {
+    border-style: solid;
+    float: left;
+    width: 50%;
+    padding: 10px;
+}
+
+/* Clear floats after the columns */
+.row:after {
+    content: "";
+    display: table;
+    clear: both;
+}
+/* Style the buttons */
+button {
+    border-style: solid;
+    outline: none;
+    padding: 12px 16px;
+    background-color: #f1f1f1;
+    cursor: pointer;
+}
+
+    button:hover {
+        background-color: #ddd;
+    }
+
+    button.active {
+        background-color: #666;
+        color: white;
+    }
+
+.column3 {
+    background-color: rgba(10, 10, 10, 0.9);
+}
+
+    .column3:nth-child(2n) {
+        background-color: rgba(10, 10, 10, 0.3);
+    }
+.buttons {
+    padding:20px;
+}
+
+.reg {
+    padding:10px;
+    color: white;
+    background-color: rgba(104, 85, 224, 1);
+}
+
+.log {
+    padding:10px;
+    color: rgb(104, 85, 224);
+    background-color: rgba(255, 255, 255, 1);
+    border: 1px solid rgba(104, 85, 224, 1);
+}
+
+.subjectselect{
+    width:100%;
+    padding:10px;
+    background: rgba(10, 10, 10, 0.85);
+    border-radius: 10px;
+    margin: 0;
+}
+.se {
+    width: 100%;
+    padding: 3px;
+    text-align: center;
+    border-radius: 10px;
+    background-color: #2e2e2e;
+    color: white;
+}

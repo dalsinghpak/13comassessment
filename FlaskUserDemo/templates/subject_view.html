@@ -3,36 +3,54 @@
 {% block title %}View Profile{% endblock %}
 
 {% block content %}
-{% if session['role'] == 'admin' %}
-<h1>Hello Admin</h1>
-<a href="/subjectviewad">View your own subjects</a>
-{% endif %}
-<table>
-    <thead>
-        <tr>
-            {% if session['role'] == 'admin' %}
-            <th>First Name</th>
-            {% endif %}
-            <th>Subjects selected</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for row in result %}
-        <tr>
-            {% if session['role'] == 'admin' %}
-            <td>{{ row.first_name }}</td>
+<div class="container-fluid">
+    <div class="jumbotron text-center">
+        <div class="container2" style="background-color: rgba(10, 10, 10, 0.7)"></div>
+        <h2 class="banner-text">
+            <p style="text-align: center;"><strong>Pakuranga College&nbsp;</strong></p>
+            <p style="text-align: center;">Subject View</p>
+        </h2>
 
-            {% endif %}
-            <td>{{ row.Name }}</td>
-            <td>
-                <a href="/delete?id={{ row.id }}"
-                   onclick="return confirm('Do you want to delete {{ row.Name }}?')">
-                    Delete
-                </a>
-            </td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+    </div>
+</div>
+<div class="row" style="justify-content:center">
+    <div class="col-md-12">
+        {% if session['role'] == 'admin' %}
+        <h1>Hello Admin</h1>
+        <a href="/subjectviewad">View your own subjects</a>
+        {% endif %}
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <table>
+                <thead>
+                    <tr>
+                        {% if session['role'] == 'admin' %}
+                        <th>First Name</th>
+                        {% endif %}
+                        <th>Subjects selected</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in result %}
+                    <tr>
+                        {% if session['role'] == 'admin' %}
+                        <td>{{ row.first_name }}</td>
 
+                        {% endif %}
+                        <td>{{ row.Name }}</td>
+                        <td>
+                            <a href="/delete?id={{ row.id }}"
+                               onclick="return confirm('Do you want to delete {{ row.Name }}?')">
+                                Delete
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+</div>
 {% endblock %}

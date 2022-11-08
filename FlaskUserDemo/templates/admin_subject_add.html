@@ -3,24 +3,36 @@
 {% block title %}Add Subject{% endblock %}
 
 {% block content %}
-<div class="col-md-12 formbox">
-    <form class="addform" method="post" enctype="multipart/form-data">
-        <label for="subject_name">Subject Name</label>
-        <input id="subject_name" name="subject_name" type="text" required>
-        <br />
-        <label for="Credits">Credits Earnt</label>
-        <input id="Credits" name="Credits" type="text" required>
-        <br />
-        <label for="Teacher">Head of faculty</label>
-        <input id="Teacher" name="Teacher" type="text" required>
-        <br />
-        <label for="Summary">Summary of subject</label>
-        <input id="Summary" name="Summary" type="text" required>
-        <br />
-        <label for="year_level">Year Level</label>
-        <input id="year_level" name="year_level" type="text" required>
-        <br />
-        <input name="Add" type="submit">
-    </form>
+<div class="container-fluid">
+    <div class="jumbotron text-center">
+        <div class="container2" style="background-color: rgba(10, 10, 10, 0.7)"></div>
+        <h2 class="banner-text">
+            <p style="text-align: center;"><strong>Pakuranga College&nbsp;</strong></p>
+            <p style="text-align: center;">Add a Subject</p>
+        </h2>
+
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12 formbox">
+        <form class="addform" method="post" enctype="multipart/form-data">
+            <label for="subject_name">Subject Name</label>
+            <input id="subject_name" name="subject_name" type="text" required>
+            <br />
+            <label for="Credits">Credits Earnt</label>
+            <input id="Credits" name="Credits" type="text" required>
+            <br />
+            <label for="Teacher">Head of faculty</label>
+            <input id="Teacher" name="Teacher" type="text" required>
+            <br />
+            <label for="Summary">Summary of subject</label>
+            <input id="Summary" name="Summary" type="text" required>
+            <br />
+            <label for="year_level">Year Level</label>
+            <input id="year_level" name="year_level" type="text" required>
+            <br />
+            <input name="Add" type="submit">
+        </form>
+    </div>
 </div>
 {% endblock %}

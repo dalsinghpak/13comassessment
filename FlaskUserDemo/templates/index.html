@@ -13,20 +13,17 @@
 
         </div>
     </div>
-    {% if 'logged_in' not in session %}
-    <a href="{{ url_for('add_user') }}">Sign Up</a>
-    <a href="{{ url_for('login') }}">Login</a>
-    <br>
-    {% elif session['role'] == 'admin' %}
-    <h2>Admin controls:</h2>
-    <div class="row">
-        <div class="col-md-12">
-            <a href="{{ url_for('list_users')}}">View all users</a>
-            <a href="{{ url_for('subject_view')}}">View all user subjects</a>
-            <a href="{{ url_for('subject_viewad')}}">View all your subjects</a>
-            <a href="{{ url_for('subject_add')}}">Add subjects</a>
-            <a href="{{ url_for('admin_subject_list')}}">List of all subjects</a>
-            <a href="{{ url_for('subject_viewad')}}">View all your subjects</a>
+    {% if session['role'] == 'admin' %}
+    <div class="admin">
+        <h2 style="text-align: center;">Admin controls</h2>
+        <div class="row">
+            <div class="col-md-12" style="justify-content: center; display: flex;">
+                <a class="log" href="{{ url_for('list_users')}}">View all users</a>
+                <a class="log" href="{{ url_for('subject_view')}}">View all user subjects</a>
+                <a class="log" href="{{ url_for('subject_viewad')}}">View all your subjects</a>
+                <a class="log" href="{{ url_for('subject_add')}}">Add subjects</a>
+                <a class="log" href="{{ url_for('admin_subject_list')}}">List of all subjects</a>
+            </div>
         </div>
     </div>
     {% endif %}

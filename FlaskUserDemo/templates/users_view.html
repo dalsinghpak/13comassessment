@@ -3,29 +3,87 @@
 {% block title %}View Profile{% endblock %}
 
 {% block content %}
-<h1>{{ result1.first_name }} {{ result1.last_name }}</h1>
-{{ result1.email }}
-<img src="{{ url_for('static', filename='images/' + (result1.avatar or 'default.png')) }}">
+<div class="container-fluid">
+    <div class="jumbotron text-center">
+        <div class="container2" style="background-color: rgba(10, 10, 10, 0.7)"></div>
+        <h2 class="banner-text">
+            <p style="text-align: center;"><strong>Pakuranga College&nbsp;</strong></p>
+            <p style="text-align: center;">Details</p>
+        </h2>
 
-<table>
-    <thead>
-        <tr>
-            <th>Subjects selected</th>
-        </tr>
-    </thead>
-    <tbody>
+    </div>
+</div>
+<div class="container">
+    <div class="row">
+        <div class="col-md-7">
+            <h1>Name:</h1>
+            <h2>{{ result1.first_name }} {{ result1.last_name }}</h2>
+        </div>
+        <div class="col-md-5">
+            <img src="{{ url_for('static', filename='images/' + (result1.avatar or 'default.png')) }}">
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <h1>Email:</h1>
+            <h2>
+                {{ result1.email }}
+            </h2>
+        </div>
+    </div>
+
+    <div class="row">
+        <button onclick="listView()"><i class="fa fa-bars"></i> List</button>
+        <button onclick="gridView()"><i class="fa fa-th-large"></i> Grid</button>
+        </div>
+        <div class="row">
         {% for row in result %}
-        <tr>
-            <td>{{ row.Name }}</td>
-            <td>
+        <div class="column3">
+            <h2>{{ row.Name }}</h2>
+            <p>
                 <a href="/delete?id={{ row.id }}"
                    onclick="return confirm('Do you want to delete {{ row.Name }}?')">
                     Delete
                 </a>
-            </td>
-        </tr>
+            </p>
+        </div>
         {% endfor %}
-    </tbody>
-</table>
+        <script>
+            // Get the elements with class="column"
+            var elements = document.getElementsByClassName("column3");
+
+            // Declare a loop variable
+            var i;
+
+            // List View
+            function listView() {
+                for (i = 0; i < elements.length; i++) {
+                    elements[i].style.width = "100%";
+                }
+            }
+
+            // Grid View
+            function gridView() {
+                for (i = 0; i < elements.length; i++) {
+                    elements[i].style.width = "50%";
+                }
+            }
+            /* Optional: Add active class to the current button (highlight it) */
+            var container = document.getElementById("btnContainer");
+            var btns = container.getElementsByClassName("button");
+            for (var i = 0; i < btns.length; i++) {
+                btns[i].addEventListener("click", function () {
+                    var current = document.getElementsByClassName("active");
+                    current[0].className = current[0].className.replace(" active", "");
+                    this.className += " active";
+                });
+            }
+
+        </script>
+           
+    </div>
+</div>
+
+
 
 {% endblock %}
